@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Us - Long Distance Connection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        script: ['Dancing Script', 'cursive'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'slide-in': 'slideIn 0.3s ease-out forwards',
+                        'spin-slow': 'spin 3s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideIn: {
+                            '0%': { opacity: '0', transform: 'translateX(-10px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #fff5f7 0%, #eef2f3 100%);
+        }
+        
+        /* Premium Glass Effect */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        
+        /* Scrollbar styling */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background-color: rgba(209, 213, 219, 0.5);
+            border-radius: 20px;
+        }
+
+        /* Dashed Line vertical */
+        .split-divider {
+            position: relative;
+        }
+        @media (min-width: 768px) {
+            .split-divider::after {
+                content: '';
+                position: absolute;
+                right: -1rem; /* Half of gap-8 (2rem) */
+                top: 10%;
+                bottom: 10%;
+                width: 1px;
+                border-right: 2px dashed rgba(244, 114, 182, 0.3);
+            }
+        }
+        @media (max-width: 767px) {
+            .split-divider::after {
+                content: '';
+                position: absolute;
+                bottom: -1rem;
+                left: 10%;
+                right: 10%;
+                height: 1px;
+                border-bottom: 2px dashed rgba(244, 114, 182, 0.3);
+            }
+        }
+
+        .mood-btn {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .mood-btn.active {
+            transform: scale(1.15);
+            box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.3);
+            filter: grayscale(0%);
+            opacity: 1;
+            background-color: white;
+            border: 2px solid #f472b6;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-700 pb-24 overflow-x-hidden selection:bg-pink-200 selection:text-pink-900">
+
+    <!-- Sync Status Indicator (Top Right Fixed) -->
+    <div id="syncStatus" class="fixed top-4 right-4 z-50 text-xs font-bold text-slate-300 flex items-center gap-2 transition-colors duration-300 bg-white/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/50 shadow-sm hover:bg-white/60">
+        <i class="fas fa-circle text-[8px]"></i> <span>Offline</span>
+    </div>
+
+    <!-- Animated Background Elements -->
+    <div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+        <div class="absolute top-[10%] left-[5%] text-pink-200/40 text-8xl animate-float">
+            <i class="fas fa-heart"></i>
+        </div>
+        <div class="absolute top-[40%] right-[10%] text-blue-200/30 text-9xl animate-float-delayed">
+            <i class="fas fa-cloud"></i>
+        </div>
+        <div class="absolute bottom-[15%] left-[20%] text-purple-200/40 text-6xl animate-pulse-slow">
+            <i class="fas fa-star"></i>
+        </div>
+        <div class="absolute -top-20 -right-20 w-96 h-96 bg-pink-300/20 rounded-full blur-3xl"></div>
+        <div class="absolute top-40 -left-20 w-72 h-72 bg-blue-300/20 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="text-center pt-10 pb-8 px-4 animate-fade-in">
+        <div class="inline-flex items-center justify-center relative group cursor-pointer" onclick="openSettingsModal()">
+            <h1 class="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-400 to-purple-500 font-script drop-shadow-sm pb-2">
+                Us
+            </h1>
+            <div class="absolute -right-8 top-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-pink-400">
+                <i class="fas fa-cog text-xl animate-spin-slow"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6">
+
+        <!-- SPLIT DASHBOARD -->
+        <div class="grid md:grid-cols-2 gap-8 mb-12 relative animate-fade-in" style="animation-delay: 0.1s;">
+            
+            <!-- LEFT COLUMN: MEGHA -->
+            <div class="space-y-6 md:pr-4 split-divider">
+                <div class="flex items-center justify-center space-x-3 mb-2">
+                    <div class="h-px w-8 bg-pink-300"></div>
+                    <h2 class="text-4xl text-slate-800 font-script text-center" id="colTitle1">Megha</h2>
+                    <div class="h-px w-8 bg-pink-300"></div>
+                </div>
+                
+                <!-- Clock 1 -->
+                <div class="glass-panel rounded-3xl p-6 text-center transform transition hover:scale-[1.02] duration-300">
+                    <div class="text-5xl font-black text-slate-700 font-mono tracking-tight" id="clock1">00:00</div>
+                    <div class="flex items-center justify-center mt-2 text-pink-500/80 text-sm font-bold uppercase tracking-widest gap-2">
+                        <i class="far fa-clock"></i> <span>Local Time</span>
+                    </div>
+                </div>
+
+                <!-- Mood 1 -->
+                <div class="glass-panel rounded-3xl p-6">
+                    <div class="flex justify-between items-end mb-4 px-1">
+                        <p class="text-sm font-bold text-slate-400 uppercase tracking-wider">Feeling</p>
+                        <p id="moodText1" class="text-sm font-bold text-pink-500 animate-slide-in">Tap to set status</p>
+                    </div>
+                    <div class="grid grid-cols-4 gap-3 sm:gap-4">
+                        <button onclick="setMood(1, 'happy')" id="mood1_happy" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">😊</button>
+                        <button onclick="setMood(1, 'sad')" id="mood1_sad" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">🥺</button>
+                        <button onclick="setMood(1, 'tired')" id="mood1_tired" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">😴</button>
+                        <button onclick="setMood(1, 'horny')" id="mood1_horny" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">😈</button>
+                        <button onclick="setMood(1, 'praying')" id="mood1_praying" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">🤲</button>
+                        <button onclick="setMood(1, 'studying')" id="mood1_studying" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">📚</button>
+                        <button onclick="setMood(1, 'busy')" id="mood1_busy" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">💼</button>
+                        <button onclick="setMood(1, 'sick')" id="mood1_sick" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">🤒</button>
+                    </div>
+                </div>
+
+                <!-- Note 1 -->
+                <div class="glass-panel rounded-3xl p-1 relative group overflow-hidden">
+                     <div class="bg-white/40 p-5 rounded-[20px]">
+                        <div class="flex justify-between items-center mb-2">
+                            <label for="inputNote1" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Thoughts</label>
+                            <span id="saveStatus1" class="text-[10px] font-bold text-green-500 opacity-0 transition-opacity duration-300">SAVED</span>
+                        </div>
+                        <textarea id="inputNote1" oninput="handleNoteInput(1)" class="w-full bg-transparent border-none resize-none outline-none text-slate-700 text-sm h-24 placeholder-slate-400 font-medium leading-relaxed custom-scroll" placeholder="Share your day..."></textarea>
+                     </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: SAHARIAR -->
+            <div class="space-y-6 md:pl-4">
+                 <div class="flex items-center justify-center space-x-3 mb-2">
+                    <div class="h-px w-8 bg-purple-300"></div>
+                    <h2 class="text-4xl text-slate-800 font-script text-center" id="colTitle2">Sahariar</h2>
+                    <div class="h-px w-8 bg-purple-300"></div>
+                </div>
+
+                <!-- Clock 2 -->
+                <div class="glass-panel rounded-3xl p-6 text-center transform transition hover:scale-[1.02] duration-300">
+                    <div class="text-5xl font-black text-slate-700 font-mono tracking-tight" id="clock2">00:00</div>
+                    <div class="flex items-center justify-center mt-2 text-purple-500/80 text-sm font-bold uppercase tracking-widest gap-2">
+                        <i class="far fa-clock"></i> <span>Local Time</span>
+                    </div>
+                </div>
+
+                <!-- Mood 2 -->
+                <div class="glass-panel rounded-3xl p-6">
+                    <div class="flex justify-between items-end mb-4 px-1">
+                        <p class="text-sm font-bold text-slate-400 uppercase tracking-wider">Feeling</p>
+                        <p id="moodText2" class="text-sm font-bold text-purple-500 animate-slide-in">Tap to set status</p>
+                    </div>
+                    <div class="grid grid-cols-4 gap-3 sm:gap-4">
+                        <button onclick="setMood(2, 'happy')" id="mood2_happy" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">😊</button>
+                        <button onclick="setMood(2, 'sad')" id="mood2_sad" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">🥺</button>
+                        <button onclick="setMood(2, 'tired')" id="mood2_tired" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">😴</button>
+                        <button onclick="setMood(2, 'horny')" id="mood2_horny" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">😈</button>
+                        <button onclick="setMood(2, 'praying')" id="mood2_praying" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">🤲</button>
+                        <button onclick="setMood(2, 'studying')" id="mood2_studying" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">📚</button>
+                        <button onclick="setMood(2, 'busy')" id="mood2_busy" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">💼</button>
+                        <button onclick="setMood(2, 'sick')" id="mood2_sick" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">🤒</button>
+                    </div>
+                </div>
+
+                <!-- Note 2 -->
+                <div class="glass-panel rounded-3xl p-1 relative group overflow-hidden">
+                    <div class="bg-white/40 p-5 rounded-[20px]">
+                        <div class="flex justify-between items-center mb-2">
+                            <label for="inputNote2" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Thoughts</label>
+                            <span id="saveStatus2" class="text-[10px] font-bold text-green-500 opacity-0 transition-opacity duration-300">SAVED</span>
+                        </div>
+                        <textarea id="inputNote2" oninput="handleNoteInput(2)" class="w-full bg-transparent border-none resize-none outline-none text-slate-700 text-sm h-24 placeholder-slate-400 font-medium leading-relaxed custom-scroll" placeholder="Share your day..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMMON SECTIONS -->
+        <div class="space-y-8 animate-fade-in" style="animation-delay: 0.2s;">
+            
+            <!-- Countdown Card -->
+            <div class="glass-panel rounded-[2rem] p-8 sm:p-10 shadow-xl text-center relative overflow-hidden group max-w-3xl mx-auto">
+                <div class="absolute inset-0 bg-gradient-to-r from-pink-100/50 to-purple-100/50 opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+                
+                <h2 class="text-3xl text-slate-700 font-script mb-8 relative z-10">Countdown to Together</h2>
+                
+                <div id="countdownContainer" class="grid grid-cols-4 gap-3 sm:gap-6 mb-4 relative z-10">
+                    <!-- Javascript populates this -->
+                </div>
+                
+                <div class="mt-6 flex items-center justify-center gap-2 text-slate-400 text-sm font-medium bg-white/30 py-1 px-3 rounded-full inline-block mx-auto">
+                    <i class="far fa-calendar-alt"></i>
+                    <span id="nextMeetDateDisplay">Set a date in settings</span>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Together Since -->
+                <div class="bg-white/80 backdrop-blur-md rounded-[2rem] p-8 shadow-lg border border-white/50 flex flex-col justify-center items-center text-center transform transition hover:-translate-y-1 duration-300">
+                    <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-pink-500 text-xl mb-4 shadow-sm">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-2">Our Story So Far</h3>
+                    <p id="togetherTimer" class="text-lg font-mono text-pink-600 font-bold bg-pink-50/50 px-4 py-2 rounded-xl border border-pink-100">0d 0h 0m 0s together</p>
+                </div>
+
+                <!-- Bucket List -->
+                <div class="glass-panel rounded-[2rem] p-8 shadow-lg flex flex-col h-full">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                            <i class="fas fa-list-ul text-purple-400"></i> Our Bucket List
+                        </h3>
+                        <!-- Open Custom Add Modal -->
+                        <button onclick="openBucketModal()" class="bg-purple-500 hover:bg-purple-600 text-white w-8 h-8 rounded-full shadow-lg shadow-purple-200 transition-all active:scale-90 flex items-center justify-center">
+                            <i class="fas fa-plus text-xs"></i>
+                        </button>
+                    </div>
+                    <ul id="bucketList" class="space-y-3 max-h-48 overflow-y-auto custom-scroll pr-2 flex-grow">
+                        <!-- Items -->
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm transition-opacity opacity-0" id="modalBackdrop"></div>
+        <!-- Panel -->
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md scale-95 opacity-0" id="modalPanel">
+                    <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                            <h3 class="text-xl font-bold leading-6 text-slate-900 font-script">Our Settings</h3>
+                            <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-red-500 transition-colors"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Next Meeting Date</label>
+                                <input type="datetime-local" id="inputNextMeet" class="block w-full rounded-xl border-0 py-3 pl-4 pr-10 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-pink-500 sm:text-sm sm:leading-6 bg-slate-50">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="button" onclick="saveSettings()" class="inline-flex w-full justify-center rounded-xl bg-pink-600 px-3 py-3 text-sm font-semibold text-white shadow-sm hover:bg-pink-500 sm:ml-3 sm:w-auto transition-all active:scale-95">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bucket List Add Modal -->
+    <div id="bucketModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm transition-opacity opacity-0" id="bucketBackdrop"></div>
+        <!-- Panel -->
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md scale-95 opacity-0" id="bucketPanel">
+                    <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                            <h3 class="text-xl font-bold leading-6 text-slate-900 font-script">Add to Bucket List</h3>
+                            <button onclick="closeBucketModal()" class="text-slate-400 hover:text-red-500 transition-colors"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">What do you want to do?</label>
+                                <input type="text" id="inputBucketItem" placeholder="e.g. Visit Paris, Cook Pasta..." class="block w-full rounded-xl border-0 py-3 pl-4 pr-10 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6 bg-slate-50">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="button" onclick="confirmAddBucket()" class="inline-flex w-full justify-center rounded-xl bg-purple-600 px-3 py-3 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 sm:ml-3 sm:w-auto transition-all active:scale-95">Add Item</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyDSzJ122FALo6tHNU4gpsUQkGujDf_AcQk",
+          authDomain: "love-megha.firebaseapp.com",
+          projectId: "love-megha",
+          storageBucket: "love-megha.firebasestorage.app",
+          messagingSenderId: "99278137805",
+          appId: "1:99278137805:web:895a407a9dfcc535687c84",
+          measurementId: "G-JSLRXLGRCY"
+        };
+        
+        let db;
+        let auth;
+        // Document ID for your couple data. Since it's just for you two, we can hardcode a name.
+        const DOC_ID = "us_data"; 
+
+        let appData = {
+            name1: "Megha",
+            name2: "Sahariar",
+            offset: 0,
+            anniversary: "2025-11-10",
+            nextMeet: "",
+            mood1: null,
+            mood2: null,
+            note1: "",
+            note2: "",
+            bucketList: [
+                { id: 1, text: "Watch a movie together online", done: false },
+                { id: 2, text: "Cook the same meal on video call", done: false }
+            ]
+        };
+
+        const moodConfig = {
+            'happy': { text: "All good", icon: "😊" },
+            'sad': { text: "Missing you", icon: "🥺" },
+            'tired': { text: "Tired", icon: "😴" },
+            'horny': { text: "Feeling naughty", icon: "😈" },
+            'praying': { text: "Praying", icon: "🤲" },
+            'studying': { text: "Studying", icon: "📚" },
+            'busy': { text: "Working", icon: "💼" },
+            'sick': { text: "Not feeling well", icon: "🤒" }
+        };
+
+        function initApp() {
+            // Check if user pasted config
+            if (!firebaseConfig.apiKey) {
+                console.warn("Firebase config missing. Using local mode.");
+                loadLocalData();
+                return;
+            }
+
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            // Sign in anonymously
+            signInAnonymously(auth).catch((error) => {
+                console.error("Auth Error:", error);
+                updateSyncStatus("Auth Error", "text-red-400");
+            });
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    updateSyncStatus("Connected", "text-green-400");
+                    // Start listening to data
+                    setupRealtimeListener();
+                } else {
+                    updateSyncStatus("Disconnected", "text-slate-300");
+                }
+            });
+        }
+
+        function setupRealtimeListener() {
+            const docRef = doc(db, "couples", DOC_ID);
+            
+            onSnapshot(docRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const remoteData = docSnap.data();
+                    
+                    // Merge remote data, but respect local typing if user is active?
+                    // For simplicity in this LDR app, we just sync. 
+                    // To avoid cursor jumps, we check focus in render.
+                    
+                    // Ensure constants aren't overwritten if they aren't in DB yet
+                    if(!remoteData.name1) remoteData.name1 = "Megha";
+                    if(!remoteData.name2) remoteData.name2 = "Sahariar";
+                    
+                    appData = { ...appData, ...remoteData };
+                    renderAll();
+                } else {
+                    // Doc doesn't exist yet, create it with defaults
+                    setDoc(docRef, appData);
+                }
+            }, (error) => {
+                console.error("Listen failed:", error);
+                updateSyncStatus("Sync Error", "text-red-400");
+            });
+        }
+
+        function loadLocalData() {
+            // Fallback for when config isn't pasted yet
+            const saved = localStorage.getItem('ldr_app_data_v3');
+            if (saved) {
+                appData = { ...appData, ...JSON.parse(saved) };
+            }
+            renderAll();
+        }
+
+        // --- Saving Data ---
+        // We override the old saveData to push to Firebase if available
+        
+        async function saveData() {
+            // Always save local as backup
+            localStorage.setItem('ldr_app_data_v3', JSON.stringify(appData));
+
+            if (db && auth && auth.currentUser) {
+                try {
+                    const docRef = doc(db, "couples", DOC_ID);
+                    await updateDoc(docRef, appData);
+                    // No need to updateSyncStatus here, the snapshot listener will confirm it implicitly 
+                    // or we rely on optimistic updates in UI
+                } catch (e) {
+                    console.error("Error updating document: ", e);
+                    updateSyncStatus("Save Failed", "text-red-400");
+                }
+            }
+        }
+        
+        // Expose functions to window so HTML onclicks work with module script
+        window.saveData = saveData;
+
+        // --- UI Rendering ---
+
+        function updateSyncStatus(text, colorClass) {
+            const el = document.getElementById('syncStatus');
+            el.innerHTML = `<i class="fas fa-circle text-[8px]"></i> <span>${text}</span>`;
+            el.className = `fixed top-4 right-4 z-50 text-xs font-bold flex items-center gap-2 transition-colors duration-300 bg-white/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/50 shadow-sm ${colorClass}`;
+        }
+
+        function renderAll() {
+            renderStaticElements();
+            renderDynamicElements();
+        }
+
+        function renderStaticElements() {
+            document.getElementById('colTitle1').innerText = appData.name1;
+            document.getElementById('colTitle2').innerText = appData.name2;
+            
+            // Intelligent Input Updates (Don't overwrite if user is currently typing in that specific box)
+            const note1 = document.getElementById('inputNote1');
+            if (document.activeElement !== note1 && note1.value !== appData.note1) {
+                note1.value = appData.note1 || "";
+            }
+
+            const note2 = document.getElementById('inputNote2');
+            if (document.activeElement !== note2 && note2.value !== appData.note2) {
+                note2.value = appData.note2 || "";
+            }
+
+            if(document.getElementById('inputNextMeet') && document.activeElement !== document.getElementById('inputNextMeet')) {
+                 document.getElementById('inputNextMeet').value = appData.nextMeet;
+            }
+
+            renderBucketList();
+            renderMoods();
+        }
+
+        function renderDynamicElements() {
+            updateTimers();
+        }
+
+        function renderMoods() {
+            [1, 2].forEach(userNum => {
+                const currentMood = appData[`mood${userNum}`];
+                document.querySelectorAll(`#mood${userNum}_happy, #mood${userNum}_sad, #mood${userNum}_tired, #mood${userNum}_horny, #mood${userNum}_praying, #mood${userNum}_studying, #mood${userNum}_busy, #mood${userNum}_sick`).forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                const textEl = document.getElementById(`moodText${userNum}`);
+                if (currentMood && moodConfig[currentMood]) {
+                    const activeBtn = document.getElementById(`mood${userNum}_${currentMood}`);
+                    if (activeBtn) activeBtn.classList.add('active');
+                    textEl.innerText = `${moodConfig[currentMood].text} ${moodConfig[currentMood].icon}`;
+                    textEl.classList.remove('text-slate-400');
+                    textEl.classList.add(userNum === 1 ? 'text-pink-500' : 'text-purple-500');
+                } else {
+                    textEl.innerText = "Tap icon to set status";
+                    textEl.classList.add('text-slate-400');
+                }
+            });
+        }
+
+        function renderBucketList() {
+            const listEl = document.getElementById('bucketList');
+            if (!listEl) return;
+            // Don't fully wipe list if we can help it to keep scroll position? 
+            // For simplicity, we rebuild, but it's fast.
+            listEl.innerHTML = '';
+
+            if (appData.bucketList.length === 0) {
+                listEl.innerHTML = '<li class="text-slate-400 text-center text-sm italic py-4 bg-white/30 rounded-xl">Add things we\'ll do together...</li>';
+                return;
+            }
+
+            appData.bucketList.forEach(item => {
+                const li = document.createElement('li');
+                li.className = `group flex items-center p-3 rounded-xl transition-all duration-300 animate-slide-in ${item.done ? 'bg-green-50/50' : 'bg-white/60 hover:bg-white'} border border-transparent hover:border-pink-100 shadow-sm`;
+                li.innerHTML = `
+                    <button onclick="toggleBucket(${item.id})" class="mr-3 text-xl transition-transform active:scale-90 ${item.done ? 'text-green-500' : 'text-slate-300 hover:text-pink-400'}">
+                        <i class="fas ${item.done ? 'fa-check-circle' : 'fa-circle'}"></i>
+                    </button>
+                    <span class="flex-grow text-sm font-medium ${item.done ? 'line-through text-slate-400' : 'text-slate-700'}">${item.text}</span>
+                    <button onclick="deleteBucket(${item.id})" class="text-slate-300 hover:text-red-400 ml-2 opacity-0 group-hover:opacity-100 transition-opacity p-2" title="Delete">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                `;
+                listEl.appendChild(li);
+            });
+        }
+
+        function updateTimers() {
+            const now = new Date();
+            document.getElementById('clock1').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('clock2').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            const togetherTimer = document.getElementById('togetherTimer');
+            if(togetherTimer && appData.anniversary) {
+                const start = new Date(appData.anniversary);
+                let diffTime = now - start;
+                let suffix = "together ❤️";
+                if (diffTime < 0) { diffTime = Math.abs(diffTime); suffix = "until we start? 🤔"; }
+                const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
+                togetherTimer.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s ${suffix}`;
+            }
+
+            const countdownContainer = document.getElementById('countdownContainer');
+            if(countdownContainer) {
+                if (appData.nextMeet) {
+                    const meet = new Date(appData.nextMeet);
+                    const distance = meet - now;
+                    if (distance < 0) {
+                        countdownContainer.innerHTML = `<div class="col-span-4 text-pink-500 font-bold text-2xl animate-pulse">Together at last! ❤️</div>`;
+                        document.getElementById('nextMeetDateDisplay').innerText = "It's time!";
+                    } else {
+                        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                        const timeBlock = (val, label) => `
+                            <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-3 sm:p-4 flex flex-col items-center shadow-sm border border-white/50 min-w-[70px]">
+                                <span class="text-2xl sm:text-4xl font-black text-slate-700 font-mono">${val}</span>
+                                <span class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">${label}</span>
+                            </div>
+                        `;
+                        countdownContainer.innerHTML = timeBlock(days, 'DAYS') + timeBlock(hours, 'HRS') + timeBlock(minutes, 'MIN') + timeBlock(seconds, 'SEC');
+                        document.getElementById('nextMeetDateDisplay').innerText = `Until ${meet.toLocaleDateString(undefined, {weekday: 'short', month: 'short', day: 'numeric'})}`;
+                    }
+                } else {
+                    countdownContainer.innerHTML = `<div class="col-span-4 py-8 text-slate-400 text-sm font-medium">Tap the gear icon to set your next date</div>`;
+                    document.getElementById('nextMeetDateDisplay').innerText = "Waiting for a date...";
+                }
+            }
+        }
+
+        // --- EXPORTED FUNCTIONS (for HTML onclicks) ---
+
+        window.setMood = function(userNum, mood) {
+            appData[`mood${userNum}`] = mood;
+            saveData();
+            // Optimistic update
+            renderMoods(); 
+        };
+
+        let typingTimers = {1: null, 2: null};
+        window.handleNoteInput = function(userNum) {
+            const val = document.getElementById(`inputNote${userNum}`).value;
+            appData[`note${userNum}`] = val;
+            
+            // UI Feedback
+            const statusEl = document.getElementById(`saveStatus${userNum}`);
+            statusEl.innerText = "SAVING...";
+            statusEl.classList.remove('opacity-0', 'text-green-500');
+            statusEl.classList.add('text-slate-400');
+            
+            clearTimeout(typingTimers[userNum]);
+            typingTimers[userNum] = setTimeout(() => {
+                saveData();
+                statusEl.innerText = "SAVED";
+                statusEl.classList.remove('text-slate-400');
+                statusEl.classList.add('text-green-500');
+                setTimeout(() => { statusEl.classList.add('opacity-0'); }, 1500);
+            }, 800);
+        };
+
+        window.toggleBucket = function(id) {
+            const item = appData.bucketList.find(i => i.id === id);
+            if (item) {
+                item.done = !item.done;
+                saveData();
+                renderBucketList();
+            }
+        };
+
+        window.deleteBucket = function(id) {
+            appData.bucketList = appData.bucketList.filter(i => i.id !== id);
+            saveData();
+            renderBucketList();
+        };
+
+        // --- Modals ---
+        window.openSettingsModal = function() { 
+            document.getElementById('settingsModal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('modalBackdrop').classList.remove('opacity-0');
+                document.getElementById('modalPanel').classList.remove('scale-95', 'opacity-0');
+                document.getElementById('modalPanel').classList.add('scale-100', 'opacity-100');
+            }, 10);
+        };
+        
+        window.closeSettingsModal = function() { 
+             document.getElementById('modalBackdrop').classList.add('opacity-0');
+             document.getElementById('modalPanel').classList.remove('scale-100', 'opacity-100');
+             document.getElementById('modalPanel').classList.add('scale-95', 'opacity-0');
+             setTimeout(() => document.getElementById('settingsModal').classList.add('hidden'), 300);
+        };
+
+        window.saveSettings = function() {
+            appData.nextMeet = document.getElementById('inputNextMeet').value;
+            saveData();
+            closeSettingsModal();
+        };
+
+        window.openBucketModal = function() { 
+            document.getElementById('inputBucketItem').value = '';
+            document.getElementById('bucketModal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('bucketBackdrop').classList.remove('opacity-0');
+                document.getElementById('bucketPanel').classList.remove('scale-95', 'opacity-0');
+                document.getElementById('bucketPanel').classList.add('scale-100', 'opacity-100');
+                document.getElementById('inputBucketItem').focus();
+            }, 10);
+        };
+
+        window.closeBucketModal = function() {
+             document.getElementById('bucketBackdrop').classList.add('opacity-0');
+             document.getElementById('bucketPanel').classList.remove('scale-100', 'opacity-100');
+             document.getElementById('bucketPanel').classList.add('scale-95', 'opacity-0');
+             setTimeout(() => document.getElementById('bucketModal').classList.add('hidden'), 300);
+        };
+
+        window.confirmAddBucket = function() {
+            const text = document.getElementById('inputBucketItem').value;
+            if (text) {
+                appData.bucketList.push({ id: Date.now(), text: text, done: false });
+                saveData();
+                renderBucketList();
+                closeBucketModal();
+            }
+        };
+
+        // Initialize
+        initApp();
+        setInterval(renderDynamicElements, 1000);
+
+    </script>
+</body>
+</html>
