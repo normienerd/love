@@ -6,35 +6,51 @@
     <title>Us</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Nunito', 'sans-serif'],
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
                         script: ['Dancing Script', 'cursive'],
                     },
                     animation: {
+                        'gradient-x': 'gradient-x 15s ease infinite',
+                        'heartbeat': 'heartbeat 1.5s ease-in-out infinite both',
                         'float': 'float 6s ease-in-out infinite',
-                        'float-delayed': 'float 6s ease-in-out 3s infinite',
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-                        'slide-in': 'slideIn 0.3s ease-out forwards',
-                        'spin-slow': 'spin 3s linear infinite',
+                        'fade-in': 'fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                        'pop-in': 'popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
                     },
                     keyframes: {
+                        'gradient-x': {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            },
+                        },
+                        heartbeat: {
+                            '0%': { transform: 'scale(1)' },
+                            '15%': { transform: 'scale(1.3)' },
+                            '30%': { transform: 'scale(1)' },
+                            '45%': { transform: 'scale(1.15)' },
+                            '60%': { transform: 'scale(1)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px) scale(0.98)' },
+                            '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+                        },
+                        popIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.8)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' },
-                        },
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        slideIn: {
-                            '0%': { opacity: '0', transform: 'translateX(-10px)' },
-                            '100%': { opacity: '1', transform: 'translateX(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
                         }
                     }
                 }
@@ -43,315 +59,281 @@
     </script>
     <style>
         body {
-            background: linear-gradient(135deg, #fff5f7 0%, #eef2f3 100%);
+            /* Liquid Gradient Background */
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            -webkit-tap-highlight-color: transparent;
+            color: #1d1d1f;
         }
-        
-        /* Premium Glass Effect */
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Ultra Glass Morphism */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-input {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
         }
         
-        /* Scrollbar styling */
-        .custom-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background-color: rgba(209, 213, 219, 0.5);
-            border-radius: 20px;
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
         }
 
-        /* Dashed Line vertical */
-        .split-divider {
+        /* Custom Toggle Switch (iOS Style) */
+        .toggle-checkbox:checked { right: 0; border-color: #34C759; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #34C759; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 0px; background: transparent; } 
+        
+        .note-bubble {
             position: relative;
-        }
-        @media (min-width: 768px) {
-            .split-divider::after {
-                content: '';
-                position: absolute;
-                right: -1rem; /* Half of gap-8 (2rem) */
-                top: 10%;
-                bottom: 10%;
-                width: 1px;
-                border-right: 2px dashed rgba(244, 114, 182, 0.3);
-            }
-        }
-        @media (max-width: 767px) {
-            .split-divider::after {
-                content: '';
-                position: absolute;
-                bottom: -1rem;
-                left: 10%;
-                right: 10%;
-                height: 1px;
-                border-bottom: 2px dashed rgba(244, 114, 182, 0.3);
-            }
-        }
-
-        .mood-btn {
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .mood-btn.active {
-            transform: scale(1.15);
-            box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.3);
-            filter: grayscale(0%);
-            opacity: 1;
-            background-color: white;
-            border: 2px solid #f472b6;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 14px 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            max-width: 260px;
         }
     </style>
 </head>
-<body class="min-h-screen text-slate-700 pb-24 overflow-x-hidden selection:bg-pink-200 selection:text-pink-900">
+<body class="antialiased min-h-screen relative overflow-x-hidden pb-10">
 
-    <!-- Sync Status Indicator (Top Right Fixed) -->
-    <div id="syncStatus" class="fixed top-4 right-4 z-50 text-xs font-bold text-slate-300 flex items-center gap-2 transition-colors duration-300 bg-white/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/50 shadow-sm hover:bg-white/60">
-        <i class="fas fa-circle text-[8px]"></i> <span>Offline</span>
+    <!-- 1. LOADING SCREEN -->
+    <div id="loadingScreen" class="fixed inset-0 z-[100] bg-white/30 backdrop-blur-3xl flex flex-col items-center justify-center transition-opacity duration-300">
+        <div class="relative flex items-center justify-center gap-4">
+            <i class="fas fa-heart text-6xl text-white drop-shadow-lg animate-heartbeat" style="animation-delay: 0s;"></i>
+            <i class="fas fa-heart text-6xl text-white drop-shadow-lg animate-heartbeat" style="animation-delay: 0.2s;"></i>
+        </div>
+        <p class="mt-6 text-white font-bold tracking-widest text-sm uppercase animate-pulse drop-shadow-md">Syncing Hearts...</p>
     </div>
 
-    <!-- Animated Background Elements -->
-    <div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-        <div class="absolute top-[10%] left-[5%] text-pink-200/40 text-8xl animate-float">
-            <i class="fas fa-heart"></i>
-        </div>
-        <div class="absolute top-[40%] right-[10%] text-blue-200/30 text-9xl animate-float-delayed">
-            <i class="fas fa-cloud"></i>
-        </div>
-        <div class="absolute bottom-[15%] left-[20%] text-purple-200/40 text-6xl animate-pulse-slow">
-            <i class="fas fa-star"></i>
-        </div>
-        <div class="absolute -top-20 -right-20 w-96 h-96 bg-pink-300/20 rounded-full blur-3xl"></div>
-        <div class="absolute top-40 -left-20 w-72 h-72 bg-blue-300/20 rounded-full blur-3xl"></div>
-    </div>
+    <!-- 2. LOGIN SCREEN -->
+    <div id="loginScreen" class="fixed inset-0 z-[90] flex flex-col items-center justify-center p-6 hidden animate-fade-in">
+        <div class="w-full max-w-sm glass-panel rounded-[2rem] p-8 text-center relative overflow-hidden">
+            <!-- Decorative blur -->
+            <div class="absolute -top-10 -left-10 w-32 h-32 bg-pink-400/30 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-blue-400/30 rounded-full blur-3xl"></div>
 
-    <!-- Header -->
-    <header class="text-center pt-10 pb-8 px-4 animate-fade-in">
-        <div class="inline-flex items-center justify-center relative group cursor-pointer" onclick="openSettingsModal()">
-            <h1 class="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-400 to-purple-500 font-script drop-shadow-sm pb-2">
-                Us
-            </h1>
-            <div class="absolute -right-8 top-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-pink-400">
-                <i class="fas fa-cog text-xl animate-spin-slow"></i>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-6xl mx-auto px-4 sm:px-6">
-
-        <!-- SPLIT DASHBOARD -->
-        <div class="grid md:grid-cols-2 gap-8 mb-12 relative animate-fade-in" style="animation-delay: 0.1s;">
+            <h1 class="text-4xl font-bold font-script text-slate-800 mb-2 relative z-10">Welcome Back</h1>
             
-            <!-- LEFT COLUMN: MEGHA -->
-            <div class="space-y-6 md:pr-4 split-divider">
-                <div class="flex items-center justify-center space-x-3 mb-2">
-                    <div class="h-px w-8 bg-pink-300"></div>
-                    <h2 class="text-4xl text-slate-800 font-script text-center" id="colTitle1">Megha</h2>
-                    <div class="h-px w-8 bg-pink-300"></div>
-                </div>
-                
-                <!-- Clock 1 -->
-                <div class="glass-panel rounded-3xl p-6 text-center transform transition hover:scale-[1.02] duration-300">
-                    <div class="text-5xl font-black text-slate-700 font-mono tracking-tight" id="clock1">00:00</div>
-                    <div class="flex items-center justify-center mt-2 text-pink-500/80 text-sm font-bold uppercase tracking-widest gap-2">
-                        <i class="far fa-clock"></i> <span>Local Time</span>
-                    </div>
-                </div>
-
-                <!-- Mood 1 -->
-                <div class="glass-panel rounded-3xl p-6">
-                    <div class="flex justify-between items-end mb-4 px-1">
-                        <p class="text-sm font-bold text-slate-400 uppercase tracking-wider">Feeling</p>
-                        <p id="moodText1" class="text-sm font-bold text-pink-500 animate-slide-in">Tap to set status</p>
-                    </div>
-                    <div class="grid grid-cols-4 gap-3 sm:gap-4">
-                        <button onclick="setMood(1, 'happy')" id="mood1_happy" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">😊</button>
-                        <button onclick="setMood(1, 'sad')" id="mood1_sad" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">🥺</button>
-                        <button onclick="setMood(1, 'tired')" id="mood1_tired" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">😴</button>
-                        <button onclick="setMood(1, 'horny')" id="mood1_horny" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">😈</button>
-                        <button onclick="setMood(1, 'praying')" id="mood1_praying" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">🤲</button>
-                        <button onclick="setMood(1, 'studying')" id="mood1_studying" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">📚</button>
-                        <button onclick="setMood(1, 'busy')" id="mood1_busy" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">💼</button>
-                        <button onclick="setMood(1, 'sick')" id="mood1_sick" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">🤒</button>
-                    </div>
-                </div>
-
-                <!-- Note 1 -->
-                <div class="glass-panel rounded-3xl p-1 relative group overflow-hidden">
-                     <div class="bg-white/40 p-5 rounded-[20px]">
-                        <div class="flex justify-between items-center mb-2">
-                            <label for="inputNote1" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Thoughts</label>
-                            <span id="saveStatus1" class="text-[10px] font-bold text-green-500 opacity-0 transition-opacity duration-300">SAVED</span>
-                        </div>
-                        <textarea id="inputNote1" oninput="handleNoteInput(1)" class="w-full bg-transparent border-none resize-none outline-none text-slate-700 text-sm h-24 placeholder-slate-400 font-medium leading-relaxed custom-scroll" placeholder="Share your day..."></textarea>
-                     </div>
-                </div>
+            <p class="text-slate-500 text-[10px] uppercase tracking-widest font-bold mt-2">Together For</p>
+            <div id="loginCountdownContainer" class="flex flex-wrap justify-center gap-2 mb-8 mt-2 min-h-[40px] font-mono font-bold text-slate-700 relative z-10">
+                <span class="text-xs text-slate-400">Loading...</span>
             </div>
 
-            <!-- RIGHT COLUMN: SAHARIAR -->
-            <div class="space-y-6 md:pl-4">
-                 <div class="flex items-center justify-center space-x-3 mb-2">
-                    <div class="h-px w-8 bg-purple-300"></div>
-                    <h2 class="text-4xl text-slate-800 font-script text-center" id="colTitle2">Sahariar</h2>
-                    <div class="h-px w-8 bg-purple-300"></div>
-                </div>
-
-                <!-- Clock 2 -->
-                <div class="glass-panel rounded-3xl p-6 text-center transform transition hover:scale-[1.02] duration-300">
-                    <div class="text-5xl font-black text-slate-700 font-mono tracking-tight" id="clock2">00:00</div>
-                    <div class="flex items-center justify-center mt-2 text-purple-500/80 text-sm font-bold uppercase tracking-widest gap-2">
-                        <i class="far fa-clock"></i> <span>Local Time</span>
-                    </div>
-                </div>
-
-                <!-- Mood 2 -->
-                <div class="glass-panel rounded-3xl p-6">
-                    <div class="flex justify-between items-end mb-4 px-1">
-                        <p class="text-sm font-bold text-slate-400 uppercase tracking-wider">Feeling</p>
-                        <p id="moodText2" class="text-sm font-bold text-purple-500 animate-slide-in">Tap to set status</p>
-                    </div>
-                    <div class="grid grid-cols-4 gap-3 sm:gap-4">
-                        <button onclick="setMood(2, 'happy')" id="mood2_happy" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">😊</button>
-                        <button onclick="setMood(2, 'sad')" id="mood2_sad" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">🥺</button>
-                        <button onclick="setMood(2, 'tired')" id="mood2_tired" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">😴</button>
-                        <button onclick="setMood(2, 'horny')" id="mood2_horny" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">😈</button>
-                        <button onclick="setMood(2, 'praying')" id="mood2_praying" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">🤲</button>
-                        <button onclick="setMood(2, 'studying')" id="mood2_studying" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">📚</button>
-                        <button onclick="setMood(2, 'busy')" id="mood2_busy" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">💼</button>
-                        <button onclick="setMood(2, 'sick')" id="mood2_sick" class="mood-btn aspect-square rounded-2xl bg-white/40 hover:bg-white flex items-center justify-center text-3xl opacity-60 grayscale hover:grayscale-0">🤒</button>
-                    </div>
-                </div>
-
-                <!-- Note 2 -->
-                <div class="glass-panel rounded-3xl p-1 relative group overflow-hidden">
-                    <div class="bg-white/40 p-5 rounded-[20px]">
-                        <div class="flex justify-between items-center mb-2">
-                            <label for="inputNote2" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Thoughts</label>
-                            <span id="saveStatus2" class="text-[10px] font-bold text-green-500 opacity-0 transition-opacity duration-300">SAVED</span>
-                        </div>
-                        <textarea id="inputNote2" oninput="handleNoteInput(2)" class="w-full bg-transparent border-none resize-none outline-none text-slate-700 text-sm h-24 placeholder-slate-400 font-medium leading-relaxed custom-scroll" placeholder="Share your day..."></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- COMMON SECTIONS -->
-        <div class="space-y-8 animate-fade-in" style="animation-delay: 0.2s;">
+            <p class="text-slate-500 text-xs uppercase tracking-widest mb-6 font-bold border-t border-slate-200/50 pt-4 relative z-10">Select Profile</p>
             
-            <!-- Countdown Card -->
-            <div class="glass-panel rounded-[2rem] p-8 sm:p-10 shadow-xl text-center relative overflow-hidden group max-w-3xl mx-auto">
-                <div class="absolute inset-0 bg-gradient-to-r from-pink-100/50 to-purple-100/50 opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-                
-                <h2 class="text-3xl text-slate-700 font-script mb-8 relative z-10">Countdown to Together</h2>
-                
-                <div id="countdownContainer" class="grid grid-cols-4 gap-3 sm:gap-6 mb-4 relative z-10">
-                    <!-- Javascript populates this -->
-                </div>
-                
-                <div class="mt-6 flex items-center justify-center gap-2 text-slate-400 text-sm font-medium bg-white/30 py-1 px-3 rounded-full inline-block mx-auto">
-                    <i class="far fa-calendar-alt"></i>
-                    <span id="nextMeetDateDisplay">Set a date in settings</span>
-                </div>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Together Since -->
-                <div class="bg-white/80 backdrop-blur-md rounded-[2rem] p-8 shadow-lg border border-white/50 flex flex-col justify-center items-center text-center transform transition hover:-translate-y-1 duration-300">
-                    <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-pink-500 text-xl mb-4 shadow-sm">
+            <div id="profileSelection" class="grid grid-cols-2 gap-4 mb-2 relative z-10">
+                <button onclick="selectProfile('Megha')" id="btnMegha" class="p-4 rounded-2xl bg-white/40 border border-white/60 hover:bg-white/60 transition-all group flex flex-col items-center gap-3 shadow-sm hover:shadow-md active:scale-95 duration-200">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-300 to-pink-500 text-white flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform">
                         <i class="fas fa-heart"></i>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-lg mb-2">Our Story So Far</h3>
-                    <p id="togetherTimer" class="text-lg font-mono text-pink-600 font-bold bg-pink-50/50 px-4 py-2 rounded-xl border border-pink-100">0d 0h 0m 0s together</p>
+                    <span class="font-bold text-slate-700">Megha</span>
+                </button>
+                <button onclick="selectProfile('Sahariar')" id="btnSahariar" class="p-4 rounded-2xl bg-white/40 border border-white/60 hover:bg-white/60 transition-all group flex flex-col items-center gap-3 shadow-sm hover:shadow-md active:scale-95 duration-200">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-300 to-blue-500 text-white flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <span class="font-bold text-slate-700">Sahariar</span>
+                </button>
+            </div>
+
+            <div id="passwordSection" class="hidden space-y-4 animate-fade-in relative z-10 mt-4">
+                <div class="relative">
+                    <input type="password" id="loginPassword" class="w-full bg-white/50 border border-white/60 rounded-2xl px-4 py-4 pr-12 outline-none text-slate-800 placeholder-slate-500 focus:bg-white/80 transition-all text-center tracking-widest" placeholder="Enter Password">
+                    <button onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
+                        <i class="fas fa-eye" id="passwordIcon"></i>
+                    </button>
+                </div>
+                <p id="loginError" class="text-red-500 text-xs mt-2 hidden text-center font-bold bg-red-100/50 py-1 rounded-lg"><i class="fas fa-exclamation-circle"></i> Incorrect</p>
+                
+                <div class="flex items-center justify-center gap-2">
+                    <input type="checkbox" id="rememberMe" class="rounded text-pink-500 focus:ring-pink-500 border-gray-300 w-4 h-4">
+                    <label for="rememberMe" class="text-xs font-bold text-slate-600">Keep me logged in</label>
                 </div>
 
-                <!-- Bucket List -->
-                <div class="glass-panel rounded-[2rem] p-8 shadow-lg flex flex-col h-full">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-                            <i class="fas fa-list-ul text-purple-400"></i> Our Bucket List
-                        </h3>
-                        <!-- Open Custom Add Modal -->
-                        <button onclick="openBucketModal()" class="bg-purple-500 hover:bg-purple-600 text-white w-8 h-8 rounded-full shadow-lg shadow-purple-200 transition-all active:scale-90 flex items-center justify-center">
-                            <i class="fas fa-plus text-xs"></i>
-                        </button>
+                <div class="flex gap-3 mt-4">
+                    <button onclick="backToProfiles()" class="flex-1 py-3 rounded-xl font-bold text-slate-600 bg-white/40 hover:bg-white/60 transition-colors">Back</button>
+                    <button onclick="attemptLogin()" class="flex-1 py-3 rounded-xl font-bold text-white bg-slate-900/90 hover:bg-slate-800 shadow-lg active:scale-95 transition-all">Enter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MAIN DASHBOARD -->
+    <div id="mainContent" class="hidden min-h-screen flex flex-col">
+
+        <!-- Glass Header -->
+        <header class="sticky top-0 z-40 glass-panel border-b-0 rounded-b-3xl mx-2 mt-2 px-6 py-4 flex justify-between items-center shadow-sm">
+            <div class="flex items-center gap-3">
+                <div id="syncStatus" class="w-2.5 h-2.5 rounded-full bg-slate-300 shadow-inner"></div>
+                <h1 class="text-2xl font-bold font-script text-slate-800">Us</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="logout()" class="text-[10px] font-black text-slate-500 hover:text-red-500 transition-colors tracking-widest uppercase">Logout</button>
+                <button onclick="openSettingsModal()" class="w-10 h-10 rounded-full bg-white/50 hover:bg-white flex items-center justify-center text-slate-600 hover:text-slate-900 transition shadow-sm border border-white/50">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-grow max-w-md mx-auto w-full p-4 space-y-6 pb-24">
+
+            <!-- PARTNER OVERVIEW -->
+            <div class="animate-fade-in mt-4 relative z-10">
+                <div class="flex items-start justify-center gap-6">
+                    <!-- Avatar -->
+                    <div class="relative group">
+                        <div id="partnerAvatarBg" class="w-24 h-24 rounded-full flex items-center justify-center text-4xl shadow-xl border-4 border-white/80 relative z-10 transition-transform duration-500 group-hover:scale-105 backdrop-blur-md">
+                            <i class="fas fa-heart text-white drop-shadow-md"></i>
+                        </div>
+                        <!-- Status Indicator Dot -->
+                        <div id="partnerStatusDot" class="absolute bottom-1 right-1 w-6 h-6 rounded-full border-4 border-white/80 z-20 shadow-md"></div>
+                        <!-- Mood Badge -->
+                        <div id="partnerMoodBadge" class="absolute -top-2 -right-2 w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-xl shadow-lg border border-white z-20 animate-float">
+                            😊
+                        </div>
                     </div>
-                    <ul id="bucketList" class="space-y-3 max-h-48 overflow-y-auto custom-scroll pr-2 flex-grow">
+
+                    <!-- Note Bubble -->
+                    <div class="note-bubble flex-1 animate-pop-in origin-left glass-panel">
+                        <div class="flex justify-between items-start mb-2">
+                            <span id="partnerNameDisplay" class="text-sm font-bold text-slate-800">Partner</span>
+                            <span id="partnerTimeDisplay" class="text-[10px] text-slate-500 font-mono bg-white/50 px-2 py-0.5 rounded-full">00:00:00</span>
+                        </div>
+                        <p id="partnerNoteText" class="text-sm text-slate-700 leading-snug font-medium">Thinking of you...</p>
+                        <div id="partnerWorkBadge" class="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase shadow-sm">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MY CONTROLS -->
+            <div class="glass-panel rounded-[2.5rem] p-6 shadow-lg animate-fade-in relative z-20" style="animation-delay: 0.05s;">
+                <div class="flex justify-between items-center mb-6 px-2">
+                    <h2 class="text-lg font-bold text-slate-800">My Status</h2>
+                    <div id="mySaveStatus" class="text-[10px] font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded-full opacity-0 transition-opacity">SAVED</div>
+                </div>
+
+                <!-- Status Toggle -->
+                <div class="flex items-center justify-between mb-5 bg-white/40 p-4 rounded-2xl border border-white/50 shadow-sm">
+                    <span class="text-sm font-bold text-slate-700 flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-white/60 flex items-center justify-center text-slate-500"><i class="fas fa-briefcase"></i></div>
+                        Working now?
+                    </span>
+                    <div class="relative inline-block w-12 h-7 align-middle select-none">
+                        <input type="checkbox" id="myStatusToggle" class="toggle-checkbox absolute block w-7 h-7 rounded-full bg-white border-4 border-slate-200 appearance-none cursor-pointer transition-all duration-300 shadow-md" onclick="updateMyStatus()"/>
+                        <label for="myStatusToggle" class="toggle-label block overflow-hidden h-7 rounded-full bg-slate-300/50 cursor-pointer transition-colors duration-300"></label>
+                    </div>
+                </div>
+
+                <!-- Mood Selector -->
+                <div class="mb-5 relative">
+                    <button onclick="toggleMyMoodDropdown()" id="myMoodTrigger" class="w-full bg-white/40 border border-white/50 rounded-2xl p-4 flex items-center justify-between hover:bg-white/60 transition-all shadow-sm active:scale-[0.98]">
+                        <span class="flex items-center gap-3">
+                            <span id="myMoodIcon" class="text-2xl filter drop-shadow-sm">😊</span>
+                            <div class="text-left">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase block">I am feeling</span>
+                                <span id="myMoodLabel" class="text-sm font-bold text-slate-800">Happy</span>
+                            </div>
+                        </span>
+                        <div class="w-8 h-8 rounded-full bg-white/50 flex items-center justify-center text-slate-400">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </div>
+                    </button>
+                    <!-- Dropdown -->
+                    <div id="myMoodDropdown" class="hidden absolute top-full left-0 w-full mt-2 glass-panel rounded-2xl shadow-2xl overflow-hidden z-50 max-h-60 overflow-y-auto">
+                        <!-- JS Populates -->
+                    </div>
+                </div>
+
+                <!-- Note Input -->
+                <div class="relative">
+                    <textarea id="myNoteInput" readonly class="w-full glass-input rounded-2xl p-5 text-sm text-slate-800 placeholder-slate-500 resize-none h-28 outline-none transition-shadow font-medium leading-relaxed opacity-70" placeholder="Share your thoughts..."></textarea>
+                    <button onclick="toggleNoteEdit()" class="absolute bottom-4 right-4 text-slate-500 hover:text-slate-800 transition-colors p-2 bg-white/50 rounded-full shadow-sm hover:shadow-md">
+                        <i id="noteEditIcon" class="fas fa-pen text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SHARED CARD -->
+            <div class="glass-panel rounded-[2.5rem] p-8 shadow-lg text-center animate-fade-in relative z-10" style="animation-delay: 0.1s;">
+                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6">Next Meeting</h3>
+                
+                <div id="countdownContainer" class="flex flex-wrap justify-center gap-3 mb-4">
+                    <!-- Timer -->
+                </div>
+                
+                <div class="text-sm text-slate-600 font-bold mb-8" id="nextMeetDateDisplay">Loading...</div>
+
+                <div class="border-t border-slate-200/50 pt-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Bucket List</span>
+                        <button onclick="openBucketModal()" class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-colors shadow-lg active:scale-90"><i class="fas fa-plus text-xs"></i></button>
+                    </div>
+                    <ul id="bucketList" class="text-left space-y-2.5">
                         <!-- Items -->
                     </ul>
                 </div>
             </div>
 
-        </div>
+            <div class="text-center">
+                <p id="togetherTimer" class="text-sm font-mono text-white/90 drop-shadow-md font-bold">Loading history...</p>
+            </div>
 
-    </main>
+        </main>
+    </div>
 
-    <!-- Settings Modal -->
-    <div id="settingsModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <!-- Backdrop -->
-        <div class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm transition-opacity opacity-0" id="modalBackdrop"></div>
-        <!-- Panel -->
-        <div class="fixed inset-0 z-10 overflow-y-auto">
-            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md scale-95 opacity-0" id="modalPanel">
-                    <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                        <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-                            <h3 class="text-xl font-bold leading-6 text-slate-900 font-script">Our Settings</h3>
-                            <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-red-500 transition-colors"><i class="fas fa-times"></i></button>
-                        </div>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Next Meeting Date</label>
-                                <input type="datetime-local" id="inputNextMeet" class="block w-full rounded-xl border-0 py-3 pl-4 pr-10 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-pink-500 sm:text-sm sm:leading-6 bg-slate-50">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-slate-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                        <button type="button" onclick="saveSettings()" class="inline-flex w-full justify-center rounded-xl bg-pink-600 px-3 py-3 text-sm font-semibold text-white shadow-sm hover:bg-pink-500 sm:ml-3 sm:w-auto transition-all active:scale-95">Save Changes</button>
-                    </div>
+    <!-- SETTINGS MODAL -->
+    <div id="settingsModal" class="fixed inset-0 z-[200] hidden">
+        <div class="absolute inset-0 bg-slate-900/20 backdrop-blur-md transition-opacity duration-300" onclick="closeSettingsModal()"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-xs glass-panel rounded-3xl p-6 shadow-2xl scale-95 opacity-0 transition-all duration-300" id="settingsPanel">
+            <h3 class="text-xl font-bold text-slate-800 mb-6 font-script">Settings</h3>
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Next Meeting</label>
+                    <input type="datetime-local" id="inputNextMeet" class="w-full bg-white/50 border border-white/60 rounded-xl px-4 py-3 text-sm outline-none focus:bg-white/80 transition-colors">
                 </div>
+                <button onclick="saveSettings()" class="w-full bg-slate-800 text-white font-bold py-3.5 rounded-xl hover:bg-slate-700 shadow-lg active:scale-95 transition-all">Save Changes</button>
             </div>
         </div>
     </div>
 
-    <!-- Bucket List Add Modal -->
-    <div id="bucketModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <!-- Backdrop -->
-        <div class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm transition-opacity opacity-0" id="bucketBackdrop"></div>
-        <!-- Panel -->
-        <div class="fixed inset-0 z-10 overflow-y-auto">
-            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md scale-95 opacity-0" id="bucketPanel">
-                    <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                        <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-                            <h3 class="text-xl font-bold leading-6 text-slate-900 font-script">Add to Bucket List</h3>
-                            <button onclick="closeBucketModal()" class="text-slate-400 hover:text-red-500 transition-colors"><i class="fas fa-times"></i></button>
-                        </div>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">What do you want to do?</label>
-                                <input type="text" id="inputBucketItem" placeholder="e.g. Visit Paris, Cook Pasta..." class="block w-full rounded-xl border-0 py-3 pl-4 pr-10 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6 bg-slate-50">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-slate-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                        <button type="button" onclick="confirmAddBucket()" class="inline-flex w-full justify-center rounded-xl bg-purple-600 px-3 py-3 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 sm:ml-3 sm:w-auto transition-all active:scale-95">Add Item</button>
-                    </div>
-                </div>
+    <!-- BUCKET MODAL -->
+    <div id="bucketModal" class="fixed inset-0 z-[200] hidden">
+        <div class="absolute inset-0 bg-slate-900/20 backdrop-blur-md transition-opacity duration-300" onclick="closeBucketModal()"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-xs glass-panel rounded-3xl p-6 shadow-2xl scale-95 opacity-0 transition-all duration-300" id="bucketPanel">
+            <h3 class="text-xl font-bold text-slate-800 mb-6 font-script">Add Goal</h3>
+            <div class="space-y-5">
+                <input type="text" id="inputBucketItem" placeholder="e.g. Visit Paris..." class="w-full bg-white/50 border border-white/60 rounded-xl px-4 py-3 text-sm outline-none focus:bg-white/80 transition-colors">
+                <button onclick="confirmAddBucket()" class="w-full bg-slate-800 text-white font-bold py-3.5 rounded-xl hover:bg-slate-700 shadow-lg active:scale-95 transition-all">Add to List</button>
             </div>
         </div>
     </div>
 
-    <!-- FIREBASE SDKs -->
+    <!-- FIREBASE & LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
           apiKey: "AIzaSyDSzJ122FALo6tHNU4gpsUQkGujDf_AcQk",
           authDomain: "love-megha.firebaseapp.com",
@@ -361,365 +343,479 @@
           appId: "1:99278137805:web:895a407a9dfcc535687c84",
           measurementId: "G-JSLRXLGRCY"
         };
-        
-        let db;
-        let auth;
-        // Document ID for your couple data. Since it's just for you two, we can hardcode a name.
-        const DOC_ID = "us_data"; 
+
+        // --- VARS ---
+        let db, auth;
+        const DOC_ID = "us_data";
+        let currentUser = null; 
+        let selectedProfileTemp = null;
+
+        // Configs
+        const USERS = {
+            'Megha': { 
+                id: 1, 
+                partner: 'Sahariar', 
+                pass: 'sahariar',
+                gradient: 'from-pink-400 to-rose-500'
+            },
+            'Sahariar': { 
+                id: 2, 
+                partner: 'Megha', 
+                pass: 'megha',
+                gradient: 'from-blue-400 to-indigo-500'
+            }
+        };
+
+        const moods = [
+            { id: 'happy', label: 'Happy', icon: '😊' },
+            { id: 'sad', label: 'Sad', icon: '🥺' },
+            { id: 'loved', label: 'Loved', icon: '🥰' },
+            { id: 'excited', label: 'Excited', icon: '🤩' },
+            { id: 'tired', label: 'Tired', icon: '😴' },
+            { id: 'sleepy', label: 'Sleepy', icon: '💤' },
+            { id: 'hungry', label: 'Hungry', icon: '🍔' },
+            { id: 'bored', label: 'Bored', icon: '😐' },
+            { id: 'stressed', label: 'Stressed', icon: '😫' },
+            { id: 'confused', label: 'Confused', icon: '😕' },
+            { id: 'proud', label: 'Proud', icon: '😎' },
+            { id: 'sick', label: 'Sick', icon: '🤒' },
+            { id: 'horny', label: 'Naughty', icon: '😈' },
+            { id: 'praying', label: 'Praying', icon: '🤲' },
+            { id: 'studying', label: 'Studying', icon: '📚' },
+            { id: 'busy', label: 'Working', icon: '💼' },
+        ];
 
         let appData = {
-            name1: "Megha",
-            name2: "Sahariar",
-            offset: 0,
-            anniversary: "2025-11-10",
-            nextMeet: "",
-            mood1: null,
-            mood2: null,
-            note1: "",
-            note2: "",
-            bucketList: [
-                { id: 1, text: "Watch a movie together online", done: false },
-                { id: 2, text: "Cook the same meal on video call", done: false }
-            ]
+            name1: "Megha", name2: "Sahariar",
+            offset: 0, anniversary: "2025-11-10", nextMeet: "",
+            mood1: 'happy', mood2: 'happy',
+            note1: "", note2: "",
+            status1: 'resting', status2: 'resting',
+            bucketList: []
         };
 
-        const moodConfig = {
-            'happy': { text: "All good", icon: "😊" },
-            'sad': { text: "Missing you", icon: "🥺" },
-            'tired': { text: "Tired", icon: "😴" },
-            'horny': { text: "Feeling naughty", icon: "😈" },
-            'praying': { text: "Praying", icon: "🤲" },
-            'studying': { text: "Studying", icon: "📚" },
-            'busy': { text: "Working", icon: "💼" },
-            'sick': { text: "Not feeling well", icon: "🤒" }
-        };
+        // --- INIT ---
+        function init() {
+            const dd = document.getElementById('myMoodDropdown');
+            dd.innerHTML = moods.map(m => `
+                <button onclick="window.selectMyMood('${m.id}')" class="w-full text-left px-5 py-3.5 hover:bg-white/50 flex items-center gap-3 transition-colors border-b border-white/20 last:border-0 active:bg-white/80">
+                    <span class="text-2xl">${m.icon}</span>
+                    <span class="text-sm font-bold text-slate-700">${m.label}</span>
+                </button>
+            `).join('');
 
-        function initApp() {
-            // Check if user pasted config
+            const savedUser = localStorage.getItem('ldr_user');
+            if (savedUser && USERS[savedUser]) {
+                currentUser = savedUser;
+                initFirebase(); 
+            } else {
+                loadLocal(); 
+                showLoginScreen();
+                setTimeout(hideLoader, 500); 
+            }
+        }
+
+        function initFirebase() {
             if (!firebaseConfig.apiKey) {
-                console.warn("Firebase config missing. Using local mode.");
-                loadLocalData();
+                console.warn("No Config");
+                loadLocal();
+                enterApp();
                 return;
             }
-
-            // Initialize Firebase
             const app = initializeApp(firebaseConfig);
             db = getFirestore(app);
             auth = getAuth(app);
-
-            // Sign in anonymously
-            signInAnonymously(auth).catch((error) => {
-                console.error("Auth Error:", error);
-                updateSyncStatus("Auth Error", "text-red-400");
-            });
-
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    updateSyncStatus("Connected", "text-green-400");
-                    // Start listening to data
-                    setupRealtimeListener();
+            signInAnonymously(auth).catch(console.error);
+            onAuthStateChanged(auth, user => {
+                const el = document.getElementById('syncStatus');
+                if(user) {
+                    el.className = "w-2.5 h-2.5 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]";
+                    setupListener();
                 } else {
-                    updateSyncStatus("Disconnected", "text-slate-300");
+                    el.className = "w-2.5 h-2.5 rounded-full bg-red-400";
                 }
             });
         }
 
-        function setupRealtimeListener() {
-            const docRef = doc(db, "couples", DOC_ID);
-            
-            onSnapshot(docRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    const remoteData = docSnap.data();
-                    
-                    // Merge remote data, but respect local typing if user is active?
-                    // For simplicity in this LDR app, we just sync. 
-                    // To avoid cursor jumps, we check focus in render.
-                    
-                    // Ensure constants aren't overwritten if they aren't in DB yet
-                    if(!remoteData.name1) remoteData.name1 = "Megha";
-                    if(!remoteData.name2) remoteData.name2 = "Sahariar";
-                    
-                    appData = { ...appData, ...remoteData };
-                    renderAll();
+        function setupListener() {
+            onSnapshot(doc(db, "couples", DOC_ID), (snap) => {
+                if (snap.exists()) {
+                    appData = { ...appData, ...snap.data() };
+                    renderDashboard();
+                    if(!document.getElementById('loginScreen').classList.contains('hidden')) {
+                       // Login screen active, do nothing
+                    } else {
+                        // Just update data
+                    }
+                    if (currentUser && document.getElementById('mainContent').classList.contains('hidden')) {
+                        enterApp();
+                    }
                 } else {
-                    // Doc doesn't exist yet, create it with defaults
-                    setDoc(docRef, appData);
+                    setDoc(doc(db, "couples", DOC_ID), appData);
+                    enterApp();
                 }
-            }, (error) => {
-                console.error("Listen failed:", error);
-                updateSyncStatus("Sync Error", "text-red-400");
             });
         }
 
-        function loadLocalData() {
-            // Fallback for when config isn't pasted yet
-            const saved = localStorage.getItem('ldr_app_data_v3');
-            if (saved) {
-                appData = { ...appData, ...JSON.parse(saved) };
-            }
-            renderAll();
+        function showLoginScreen() {
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
         }
 
-        // --- Saving Data ---
-        // We override the old saveData to push to Firebase if available
-        
-        async function saveData() {
-            // Always save local as backup
-            localStorage.setItem('ldr_app_data_v3', JSON.stringify(appData));
+        window.selectProfile = (name) => {
+            selectedProfileTemp = name;
+            document.getElementById('profileSelection').classList.add('hidden');
+            document.getElementById('passwordSection').classList.remove('hidden');
+            setTimeout(() => document.getElementById('loginPassword').focus(), 100);
+        };
 
-            if (db && auth && auth.currentUser) {
-                try {
-                    const docRef = doc(db, "couples", DOC_ID);
-                    await updateDoc(docRef, appData);
-                    // No need to updateSyncStatus here, the snapshot listener will confirm it implicitly 
-                    // or we rely on optimistic updates in UI
-                } catch (e) {
-                    console.error("Error updating document: ", e);
-                    updateSyncStatus("Save Failed", "text-red-400");
+        window.backToProfiles = () => {
+            selectedProfileTemp = null;
+            document.getElementById('passwordSection').classList.add('hidden');
+            document.getElementById('profileSelection').classList.remove('hidden');
+            document.getElementById('loginError').classList.add('hidden');
+            document.getElementById('loginPassword').value = '';
+        };
+
+        window.togglePasswordVisibility = () => {
+            const input = document.getElementById('loginPassword');
+            const icon = document.getElementById('passwordIcon');
+            if(input.type === "password"){
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        };
+
+        window.attemptLogin = () => {
+            const input = document.getElementById('loginPassword').value;
+            if (input === USERS[selectedProfileTemp].pass) {
+                currentUser = selectedProfileTemp;
+                if (document.getElementById('rememberMe').checked) {
+                    localStorage.setItem('ldr_user', currentUser);
                 }
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('loadingScreen').classList.remove('hidden');
+                document.getElementById('loadingScreen').classList.remove('opacity-0');
+                setTimeout(initFirebase, 300);
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
             }
-        }
-        
-        // Expose functions to window so HTML onclicks work with module script
-        window.saveData = saveData;
+        };
 
-        // --- UI Rendering ---
+        window.logout = () => {
+            localStorage.removeItem('ldr_user');
+            location.reload();
+        };
 
-        function updateSyncStatus(text, colorClass) {
-            const el = document.getElementById('syncStatus');
-            el.innerHTML = `<i class="fas fa-circle text-[8px]"></i> <span>${text}</span>`;
-            el.className = `fixed top-4 right-4 z-50 text-xs font-bold flex items-center gap-2 transition-colors duration-300 bg-white/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/50 shadow-sm ${colorClass}`;
-        }
-
-        function renderAll() {
-            renderStaticElements();
-            renderDynamicElements();
+        function hideLoader() {
+             const loader = document.getElementById('loadingScreen');
+             loader.classList.add('opacity-0');
+             setTimeout(() => loader.classList.add('hidden'), 300);
         }
 
-        function renderStaticElements() {
-            document.getElementById('colTitle1').innerText = appData.name1;
-            document.getElementById('colTitle2').innerText = appData.name2;
+        function enterApp() {
+            const loader = document.getElementById('loadingScreen');
+            loader.classList.add('opacity-0');
+            document.getElementById('mainContent').classList.remove('hidden');
+            setTimeout(() => loader.classList.add('hidden'), 300);
+            renderDashboard();
+        }
+
+        function renderDashboard() {
+            if(!currentUser) return;
+
+            const myId = USERS[currentUser].id;
+            const partnerName = USERS[currentUser].partner;
+            const partnerId = USERS[partnerName].id;
+
+            // Partner
+            const partnerAvatarBg = document.getElementById('partnerAvatarBg');
+            const partnerStatusDot = document.getElementById('partnerStatusDot');
+            const partnerMoodBadge = document.getElementById('partnerMoodBadge');
             
-            // Intelligent Input Updates (Don't overwrite if user is currently typing in that specific box)
-            const note1 = document.getElementById('inputNote1');
-            if (document.activeElement !== note1 && note1.value !== appData.note1) {
-                note1.value = appData.note1 || "";
+            if (partnerName === 'Megha') {
+                partnerAvatarBg.className = `w-24 h-24 rounded-full flex items-center justify-center text-4xl shadow-xl border-4 border-white/80 relative z-10 transition-transform duration-500 group-hover:scale-105 backdrop-blur-md bg-gradient-to-br from-pink-400 to-rose-500 text-white`;
+            } else {
+                partnerAvatarBg.className = `w-24 h-24 rounded-full flex items-center justify-center text-4xl shadow-xl border-4 border-white/80 relative z-10 transition-transform duration-500 group-hover:scale-105 backdrop-blur-md bg-gradient-to-br from-blue-400 to-indigo-500 text-white`;
             }
 
-            const note2 = document.getElementById('inputNote2');
-            if (document.activeElement !== note2 && note2.value !== appData.note2) {
-                note2.value = appData.note2 || "";
+            const pMood = appData[`mood${partnerId}`];
+            const pStatus = appData[`status${partnerId}`];
+            const pNote = appData[`note${partnerId}`];
+
+            const pMoodObj = moods.find(m => m.id === pMood) || moods[0];
+            partnerMoodBadge.innerText = pMoodObj.icon;
+            document.getElementById('partnerNameDisplay').innerText = partnerName;
+            document.getElementById('partnerNoteText').innerText = pNote || "No thoughts yet...";
+            
+            const badgeEl = document.getElementById('partnerWorkBadge');
+            if(pStatus === 'working') {
+                partnerStatusDot.className = "absolute bottom-1 right-1 w-6 h-6 rounded-full border-4 border-white/80 z-20 shadow-md bg-orange-500";
+                badgeEl.className = "mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase shadow-sm bg-orange-100 text-orange-600";
+                badgeEl.innerHTML = `<i class="fas fa-briefcase"></i> Working`;
+            } else {
+                partnerStatusDot.className = "absolute bottom-1 right-1 w-6 h-6 rounded-full border-4 border-white/80 z-20 shadow-md bg-green-500";
+                badgeEl.className = "mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase shadow-sm bg-green-100 text-green-600";
+                badgeEl.innerHTML = `<i class="fas fa-coffee"></i> Resting`;
             }
 
-            if(document.getElementById('inputNextMeet') && document.activeElement !== document.getElementById('inputNextMeet')) {
-                 document.getElementById('inputNextMeet').value = appData.nextMeet;
+            // My Controls
+            const myStatus = appData[`status${myId}`];
+            const myMood = appData[`mood${myId}`];
+            const myNote = appData[`note${myId}`];
+
+            document.getElementById('myStatusToggle').checked = (myStatus === 'working');
+            
+            const myMoodObj = moods.find(m => m.id === myMood) || moods[0];
+            document.getElementById('myMoodIcon').innerText = myMoodObj.icon;
+            document.getElementById('myMoodLabel').innerText = myMoodObj.label;
+
+            const noteInput = document.getElementById('myNoteInput');
+            // Only update if not editing to avoid overwriting typed stuff before save
+            if (!isEditingNote && noteInput.value !== myNote) {
+                noteInput.value = myNote || "";
             }
 
             renderBucketList();
-            renderMoods();
-        }
-
-        function renderDynamicElements() {
             updateTimers();
         }
 
-        function renderMoods() {
-            [1, 2].forEach(userNum => {
-                const currentMood = appData[`mood${userNum}`];
-                document.querySelectorAll(`#mood${userNum}_happy, #mood${userNum}_sad, #mood${userNum}_tired, #mood${userNum}_horny, #mood${userNum}_praying, #mood${userNum}_studying, #mood${userNum}_busy, #mood${userNum}_sick`).forEach(btn => {
-                    btn.classList.remove('active');
-                });
+        window.updateMyStatus = () => {
+            const myId = USERS[currentUser].id;
+            const isWorking = document.getElementById('myStatusToggle').checked;
+            appData[`status${myId}`] = isWorking ? 'working' : 'resting';
+            saveData();
+        };
 
-                const textEl = document.getElementById(`moodText${userNum}`);
-                if (currentMood && moodConfig[currentMood]) {
-                    const activeBtn = document.getElementById(`mood${userNum}_${currentMood}`);
-                    if (activeBtn) activeBtn.classList.add('active');
-                    textEl.innerText = `${moodConfig[currentMood].text} ${moodConfig[currentMood].icon}`;
-                    textEl.classList.remove('text-slate-400');
-                    textEl.classList.add(userNum === 1 ? 'text-pink-500' : 'text-purple-500');
-                } else {
-                    textEl.innerText = "Tap icon to set status";
-                    textEl.classList.add('text-slate-400');
-                }
-            });
-        }
+        window.toggleMyMoodDropdown = () => {
+            document.getElementById('myMoodDropdown').classList.toggle('hidden');
+        };
+
+        window.selectMyMood = (id) => {
+            const myId = USERS[currentUser].id;
+            appData[`mood${myId}`] = id;
+            saveData();
+            document.getElementById('myMoodDropdown').classList.add('hidden');
+            renderDashboard(); 
+        };
+
+        // Note Editing Logic
+        let isEditingNote = false;
+        window.toggleNoteEdit = () => {
+            const input = document.getElementById('myNoteInput');
+            const icon = document.getElementById('noteEditIcon');
+            const myId = USERS[currentUser].id;
+
+            if (!isEditingNote) {
+                // Start Editing
+                isEditingNote = true;
+                input.removeAttribute('readonly');
+                input.classList.remove('opacity-70');
+                input.focus();
+                icon.classList.remove('fa-pen');
+                icon.classList.add('fa-check');
+            } else {
+                // Finish Editing (Done)
+                isEditingNote = false;
+                input.setAttribute('readonly', true);
+                input.classList.add('opacity-70');
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-pen');
+                
+                // Save
+                appData[`note${myId}`] = input.value;
+                saveData();
+                
+                // Visual feedback
+                const status = document.getElementById('mySaveStatus');
+                status.innerText = "SAVED";
+                status.className = "text-[10px] font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded-full transition-opacity";
+                status.style.opacity = '1';
+                setTimeout(() => status.style.opacity = '0', 1500);
+            }
+        };
 
         function renderBucketList() {
-            const listEl = document.getElementById('bucketList');
-            if (!listEl) return;
-            // Don't fully wipe list if we can help it to keep scroll position? 
-            // For simplicity, we rebuild, but it's fast.
-            listEl.innerHTML = '';
-
-            if (appData.bucketList.length === 0) {
-                listEl.innerHTML = '<li class="text-slate-400 text-center text-sm italic py-4 bg-white/30 rounded-xl">Add things we\'ll do together...</li>';
+            const list = document.getElementById('bucketList');
+            if(appData.bucketList.length === 0) {
+                list.innerHTML = `<li class="text-center text-slate-500 text-xs italic py-2">Add your first goal...</li>`;
                 return;
             }
+            list.innerHTML = appData.bucketList.map(item => {
+                let dotColor = 'border-slate-300';
+                let checkColor = 'bg-slate-400';
+                // 1=Megha(Pink), 2=Sahariar(Blue)
+                if(item.addedBy === 1) { 
+                    dotColor = 'border-pink-400';
+                    checkColor = 'bg-pink-500';
+                } else if(item.addedBy === 2) { 
+                    dotColor = 'border-blue-400';
+                    checkColor = 'bg-blue-500';
+                }
 
-            appData.bucketList.forEach(item => {
-                const li = document.createElement('li');
-                li.className = `group flex items-center p-3 rounded-xl transition-all duration-300 animate-slide-in ${item.done ? 'bg-green-50/50' : 'bg-white/60 hover:bg-white'} border border-transparent hover:border-pink-100 shadow-sm`;
-                li.innerHTML = `
-                    <button onclick="toggleBucket(${item.id})" class="mr-3 text-xl transition-transform active:scale-90 ${item.done ? 'text-green-500' : 'text-slate-300 hover:text-pink-400'}">
-                        <i class="fas ${item.done ? 'fa-check-circle' : 'fa-circle'}"></i>
-                    </button>
-                    <span class="flex-grow text-sm font-medium ${item.done ? 'line-through text-slate-400' : 'text-slate-700'}">${item.text}</span>
-                    <button onclick="deleteBucket(${item.id})" class="text-slate-300 hover:text-red-400 ml-2 opacity-0 group-hover:opacity-100 transition-opacity p-2" title="Delete">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                `;
-                listEl.appendChild(li);
-            });
+                return `
+                <li class="flex items-center justify-between p-3 rounded-2xl bg-white/40 border border-white/50 backdrop-blur-sm transition-all hover:bg-white/60">
+                    <div class="flex items-center gap-3 cursor-pointer" onclick="window.toggleBucketItem(${item.id})">
+                        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${item.done ? checkColor + ' border-transparent' : dotColor}">
+                            ${item.done ? '<i class="fas fa-check text-white text-[9px]"></i>' : ''}
+                        </div>
+                        <span class="text-sm font-bold text-slate-700 ${item.done ? 'line-through opacity-50' : ''}">${item.text}</span>
+                    </div>
+                    <button onclick="window.deleteBucketItem(${item.id})" class="text-slate-400 hover:text-red-500 transition-colors p-2"><i class="fas fa-trash text-xs"></i></button>
+                </li>
+            `}).join('');
         }
 
         function updateTimers() {
             const now = new Date();
-            document.getElementById('clock1').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            document.getElementById('clock2').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const timeOptions = {hour:'2-digit', minute:'2-digit', second: '2-digit'};
+            document.getElementById('partnerTimeDisplay').innerText = now.toLocaleTimeString([], timeOptions);
 
-            const togetherTimer = document.getElementById('togetherTimer');
-            if(togetherTimer && appData.anniversary) {
+            // 1. Together Timer (Footer & Login) - With Seconds
+            let togetherText = { d:0, h:0, m:0, s:0 };
+            if (appData.anniversary) {
                 const start = new Date(appData.anniversary);
-                let diffTime = now - start;
-                let suffix = "together ❤️";
-                if (diffTime < 0) { diffTime = Math.abs(diffTime); suffix = "until we start? 🤔"; }
-                const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
-                togetherTimer.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s ${suffix}`;
+                const diff = now - start;
+                togetherText.d = Math.floor(diff / 86400000);
+                togetherText.h = Math.floor((diff % 86400000) / 3600000);
+                togetherText.m = Math.floor((diff % 3600000) / 60000);
+                togetherText.s = Math.floor((diff % 60000) / 1000);
             }
 
-            const countdownContainer = document.getElementById('countdownContainer');
-            if(countdownContainer) {
-                if (appData.nextMeet) {
-                    const meet = new Date(appData.nextMeet);
-                    const distance = meet - now;
-                    if (distance < 0) {
-                        countdownContainer.innerHTML = `<div class="col-span-4 text-pink-500 font-bold text-2xl animate-pulse">Together at last! ❤️</div>`;
-                        document.getElementById('nextMeetDateDisplay').innerText = "It's time!";
+            // Login Screen Countdown
+            const loginContainer = document.getElementById('loginCountdownContainer');
+            if (loginContainer) {
+                const block = (v, l) => `
+                    <div class="flex flex-col items-center w-12 bg-white/40 rounded-xl py-1.5 border border-white/50 backdrop-blur-sm">
+                        <span class="text-xl font-bold text-slate-800 font-mono">${String(v).padStart(2,'0')}</span>
+                        <span class="text-[8px] font-bold text-slate-500 uppercase">${l}</span>
+                    </div>`;
+                loginContainer.innerHTML = block(togetherText.d,'D') + block(togetherText.h,'H') + block(togetherText.m,'M') + block(togetherText.s,'S');
+            }
+
+            // Footer Countdown
+            const togetherEl = document.getElementById('togetherTimer');
+            if(togetherEl) togetherEl.innerText = `${togetherText.d}d ${togetherText.h}h ${togetherText.m}m ${togetherText.s}s together ❤️`;
+
+            // 2. Next Meeting Countdown (Dashboard)
+            const dashContainer = document.getElementById('countdownContainer');
+            if(dashContainer) {
+                if(appData.nextMeet) {
+                    const target = new Date(appData.nextMeet);
+                    const diff = target - now;
+                    if(diff < 0) {
+                        dashContainer.innerHTML = `<span class="text-pink-500 font-bold animate-pulse text-sm font-script text-2xl">Together at last! ❤️</span>`;
                     } else {
-                        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                        const timeBlock = (val, label) => `
-                            <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-3 sm:p-4 flex flex-col items-center shadow-sm border border-white/50 min-w-[70px]">
-                                <span class="text-2xl sm:text-4xl font-black text-slate-700 font-mono">${val}</span>
-                                <span class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">${label}</span>
-                            </div>
-                        `;
-                        countdownContainer.innerHTML = timeBlock(days, 'DAYS') + timeBlock(hours, 'HRS') + timeBlock(minutes, 'MIN') + timeBlock(seconds, 'SEC');
-                        document.getElementById('nextMeetDateDisplay').innerText = `Until ${meet.toLocaleDateString(undefined, {weekday: 'short', month: 'short', day: 'numeric'})}`;
+                        const d = Math.floor(diff / 86400000);
+                        const h = Math.floor((diff % 86400000) / 3600000);
+                        const m = Math.floor((diff % 3600000) / 60000);
+                        const s = Math.floor((diff % 60000) / 1000);
+                        
+                        const block = (v, l) => `
+                            <div class="flex flex-col items-center w-12 bg-white/40 rounded-xl py-2 border border-white/50 backdrop-blur-sm shadow-sm">
+                                <span class="text-xl font-bold text-slate-800 font-mono">${String(v).padStart(2,'0')}</span>
+                                <span class="text-[8px] font-bold text-slate-500 uppercase tracking-wider">${l}</span>
+                            </div>`;
+                        dashContainer.innerHTML = block(d,'D') + block(h,'H') + block(m,'M') + block(s,'S');
+                        
+                        const dateText = document.getElementById('nextMeetDateDisplay');
+                        if(dateText) dateText.innerText = `Until ${target.toLocaleDateString(undefined, {weekday:'short', month:'short', day:'numeric'})}`;
                     }
                 } else {
-                    countdownContainer.innerHTML = `<div class="col-span-4 py-8 text-slate-400 text-sm font-medium">Tap the gear icon to set your next date</div>`;
-                    document.getElementById('nextMeetDateDisplay').innerText = "Waiting for a date...";
+                    dashContainer.innerHTML = `<span class="text-xs text-slate-500 italic bg-white/30 px-4 py-2 rounded-full">Tap settings to set date</span>`;
+                    const dateText = document.getElementById('nextMeetDateDisplay');
+                    if(dateText) dateText.innerText = "Waiting...";
                 }
             }
         }
 
-        // --- EXPORTED FUNCTIONS (for HTML onclicks) ---
-
-        window.setMood = function(userNum, mood) {
-            appData[`mood${userNum}`] = mood;
-            saveData();
-            // Optimistic update
-            renderMoods(); 
-        };
-
-        let typingTimers = {1: null, 2: null};
-        window.handleNoteInput = function(userNum) {
-            const val = document.getElementById(`inputNote${userNum}`).value;
-            appData[`note${userNum}`] = val;
-            
-            // UI Feedback
-            const statusEl = document.getElementById(`saveStatus${userNum}`);
-            statusEl.innerText = "SAVING...";
-            statusEl.classList.remove('opacity-0', 'text-green-500');
-            statusEl.classList.add('text-slate-400');
-            
-            clearTimeout(typingTimers[userNum]);
-            typingTimers[userNum] = setTimeout(() => {
-                saveData();
-                statusEl.innerText = "SAVED";
-                statusEl.classList.remove('text-slate-400');
-                statusEl.classList.add('text-green-500');
-                setTimeout(() => { statusEl.classList.add('opacity-0'); }, 1500);
-            }, 800);
-        };
-
-        window.toggleBucket = function(id) {
-            const item = appData.bucketList.find(i => i.id === id);
-            if (item) {
-                item.done = !item.done;
-                saveData();
-                renderBucketList();
-            }
-        };
-
-        window.deleteBucket = function(id) {
-            appData.bucketList = appData.bucketList.filter(i => i.id !== id);
-            saveData();
-            renderBucketList();
-        };
-
-        // --- Modals ---
-        window.openSettingsModal = function() { 
+        // --- MODALS ---
+        window.openSettingsModal = () => {
+            document.getElementById('inputNextMeet').value = appData.nextMeet;
             document.getElementById('settingsModal').classList.remove('hidden');
             setTimeout(() => {
-                document.getElementById('modalBackdrop').classList.remove('opacity-0');
-                document.getElementById('modalPanel').classList.remove('scale-95', 'opacity-0');
-                document.getElementById('modalPanel').classList.add('scale-100', 'opacity-100');
+                document.getElementById('settingsPanel').classList.remove('scale-95', 'opacity-0');
+                document.getElementById('settingsPanel').classList.add('scale-100', 'opacity-100');
             }, 10);
-        };
-        
-        window.closeSettingsModal = function() { 
-             document.getElementById('modalBackdrop').classList.add('opacity-0');
-             document.getElementById('modalPanel').classList.remove('scale-100', 'opacity-100');
-             document.getElementById('modalPanel').classList.add('scale-95', 'opacity-0');
-             setTimeout(() => document.getElementById('settingsModal').classList.add('hidden'), 300);
-        };
-
-        window.saveSettings = function() {
+        }
+        window.closeSettingsModal = () => {
+            document.getElementById('settingsPanel').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => document.getElementById('settingsModal').classList.add('hidden'), 200);
+        }
+        window.saveSettings = () => {
             appData.nextMeet = document.getElementById('inputNextMeet').value;
             saveData();
             closeSettingsModal();
-        };
+        }
 
-        window.openBucketModal = function() { 
+        window.openBucketModal = () => {
             document.getElementById('inputBucketItem').value = '';
             document.getElementById('bucketModal').classList.remove('hidden');
             setTimeout(() => {
-                document.getElementById('bucketBackdrop').classList.remove('opacity-0');
                 document.getElementById('bucketPanel').classList.remove('scale-95', 'opacity-0');
                 document.getElementById('bucketPanel').classList.add('scale-100', 'opacity-100');
                 document.getElementById('inputBucketItem').focus();
             }, 10);
-        };
-
-        window.closeBucketModal = function() {
-             document.getElementById('bucketBackdrop').classList.add('opacity-0');
-             document.getElementById('bucketPanel').classList.remove('scale-100', 'opacity-100');
-             document.getElementById('bucketPanel').classList.add('scale-95', 'opacity-0');
-             setTimeout(() => document.getElementById('bucketModal').classList.add('hidden'), 300);
-        };
-
-        window.confirmAddBucket = function() {
-            const text = document.getElementById('inputBucketItem').value;
-            if (text) {
-                appData.bucketList.push({ id: Date.now(), text: text, done: false });
+        }
+        window.closeBucketModal = () => {
+            document.getElementById('bucketPanel').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => document.getElementById('bucketModal').classList.add('hidden'), 200);
+        }
+        window.confirmAddBucket = () => {
+            const txt = document.getElementById('inputBucketItem').value;
+            if(txt) {
+                // Add current user ID as creator
+                appData.bucketList.push({ 
+                    id: Date.now(), 
+                    text: txt, 
+                    done: false, 
+                    addedBy: USERS[currentUser].id 
+                });
                 saveData();
                 renderBucketList();
                 closeBucketModal();
             }
-        };
+        }
+        window.toggleBucketItem = (id) => {
+            const i = appData.bucketList.find(x => x.id === id);
+            if(i) { i.done = !i.done; saveData(); renderBucketList(); }
+        }
+        window.deleteBucketItem = (id) => {
+            appData.bucketList = appData.bucketList.filter(x => x.id !== id);
+            saveData(); renderBucketList();
+        }
 
-        // Initialize
-        initApp();
-        setInterval(renderDynamicElements, 1000);
+        // Close dropdowns
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#myMoodTrigger')) {
+                document.getElementById('myMoodDropdown').classList.add('hidden');
+            }
+        });
+
+        function loadLocal() {
+            const saved = localStorage.getItem('ldr_v4');
+            if (saved) appData = { ...appData, ...JSON.parse(saved) };
+            updateTimers(); 
+        }
+        async function saveData() {
+            localStorage.setItem('ldr_v4', JSON.stringify(appData));
+            if (db && auth && auth.currentUser) {
+                await updateDoc(doc(db, "couples", DOC_ID), appData);
+            }
+        }
+
+        // Start
+        init();
+        setInterval(updateTimers, 1000);
 
     </script>
 </body>
 </html>
+
 
