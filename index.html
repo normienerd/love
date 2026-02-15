@@ -16,22 +16,19 @@
                         script: ['Dancing Script', 'cursive'],
                     },
                     animation: {
-                        'gradient-x': 'gradient-x 15s ease infinite',
+                        'blob': 'blob 7s infinite',
                         'heartbeat': 'heartbeat 1.5s ease-in-out infinite both',
                         'float': 'float 6s ease-in-out infinite',
                         'fade-in': 'fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                         'pop-in': 'popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+                        'slide-down': 'slideDown 0.3s ease-out forwards',
                     },
                     keyframes: {
-                        'gradient-x': {
-                            '0%, 100%': {
-                                'background-size': '200% 200%',
-                                'background-position': 'left center'
-                            },
-                            '50%': {
-                                'background-size': '200% 200%',
-                                'background-position': 'right center'
-                            },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
                         },
                         heartbeat: {
                             '0%': { transform: 'scale(1)' },
@@ -51,6 +48,10 @@
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-10px)' },
+                        },
+                        slideDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-10px)', maxHeight: '0' },
+                            '100%': { opacity: '1', transform: 'translateY(0)', maxHeight: '500px' },
                         }
                     }
                 }
@@ -59,45 +60,59 @@
     </script>
     <style>
         body {
-            /* Liquid Gradient Background */
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
+            background-color: #f3f4f6;
             -webkit-tap-highlight-color: transparent;
             color: #1d1d1f;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* Mesh Gradient Background */
+        .mesh-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background-color: #ffdde1;
+            overflow: hidden;
         }
+        .mesh-blob {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.8;
+            animation: blob 10s infinite alternate;
+            border-radius: 50%;
+        }
+        .mesh-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #ee7752; animation-delay: 0s; }
+        .mesh-2 { top: 20%; right: -10%; width: 60vw; height: 60vw; background: #e73c7e; animation-delay: 2s; }
+        .mesh-3 { bottom: -10%; left: 10%; width: 50vw; height: 50vw; background: #23a6d5; animation-delay: 4s; }
+        .mesh-4 { bottom: 20%; right: 20%; width: 40vw; height: 40vw; background: #23d5ab; animation-delay: 6s; }
 
         /* Ultra Glass Morphism */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(25px) saturate(200%);
+            -webkit-backdrop-filter: blur(25px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         }
 
         .glass-input {
-            background: rgba(255, 255, 255, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(10px);
         }
         
         .glass-input:focus {
-            background: rgba(255, 255, 255, 0.7);
-            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
         }
 
-        /* Custom Toggle Switch (iOS Style) */
         .toggle-checkbox:checked { right: 0; border-color: #34C759; }
         .toggle-checkbox:checked + .toggle-label { background-color: #34C759; }
         
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 0px; background: transparent; } 
         
         .note-bubble {
@@ -114,39 +129,43 @@
 </head>
 <body class="antialiased min-h-screen relative overflow-x-hidden pb-10">
 
+    <!-- Background -->
+    <div class="mesh-bg">
+        <div class="mesh-blob mesh-1"></div>
+        <div class="mesh-blob mesh-2"></div>
+        <div class="mesh-blob mesh-3"></div>
+        <div class="mesh-blob mesh-4"></div>
+    </div>
+
     <!-- 1. LOADING SCREEN -->
-    <div id="loadingScreen" class="fixed inset-0 z-[100] bg-white/30 backdrop-blur-3xl flex flex-col items-center justify-center transition-opacity duration-300">
+    <div id="loadingScreen" class="fixed inset-0 z-[100] bg-white/40 backdrop-blur-xl flex flex-col items-center justify-center transition-opacity duration-300">
         <div class="relative flex items-center justify-center gap-4">
-            <i class="fas fa-heart text-6xl text-white drop-shadow-lg animate-heartbeat" style="animation-delay: 0s;"></i>
-            <i class="fas fa-heart text-6xl text-white drop-shadow-lg animate-heartbeat" style="animation-delay: 0.2s;"></i>
+            <i class="fas fa-heart text-6xl text-pink-500 drop-shadow-lg animate-heartbeat" style="animation-delay: 0s;"></i>
+            <i class="fas fa-heart text-6xl text-blue-500 drop-shadow-lg animate-heartbeat" style="animation-delay: 0.2s;"></i>
         </div>
-        <p class="mt-6 text-white font-bold tracking-widest text-sm uppercase animate-pulse drop-shadow-md">Syncing Hearts...</p>
+        <p class="mt-6 text-slate-700 font-bold tracking-widest text-sm uppercase animate-pulse drop-shadow-md">Connecting...</p>
     </div>
 
     <!-- 2. LOGIN SCREEN -->
     <div id="loginScreen" class="fixed inset-0 z-[90] flex flex-col items-center justify-center p-6 hidden animate-fade-in">
         <div class="w-full max-w-sm glass-panel rounded-[2rem] p-8 text-center relative overflow-hidden">
-            <!-- Decorative blur -->
-            <div class="absolute -top-10 -left-10 w-32 h-32 bg-pink-400/30 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-blue-400/30 rounded-full blur-3xl"></div>
-
-            <h1 class="text-4xl font-bold font-script text-slate-800 mb-2 relative z-10">Welcome Back</h1>
+            <h1 class="text-4xl font-bold font-script text-slate-800 mb-2">Welcome Back</h1>
             
-            <p class="text-slate-500 text-[10px] uppercase tracking-widest font-bold mt-2">Together For</p>
+            <p class="text-slate-600 text-[10px] uppercase tracking-widest font-bold mt-2">Together For</p>
             <div id="loginCountdownContainer" class="flex flex-wrap justify-center gap-2 mb-8 mt-2 min-h-[40px] font-mono font-bold text-slate-700 relative z-10">
-                <span class="text-xs text-slate-400">Loading...</span>
+                <span class="text-xs text-slate-500">Loading...</span>
             </div>
 
-            <p class="text-slate-500 text-xs uppercase tracking-widest mb-6 font-bold border-t border-slate-200/50 pt-4 relative z-10">Select Profile</p>
+            <p class="text-slate-600 text-xs uppercase tracking-widest mb-6 font-bold border-t border-slate-300/50 pt-4">Select Profile</p>
             
             <div id="profileSelection" class="grid grid-cols-2 gap-4 mb-2 relative z-10">
-                <button onclick="selectProfile('Megha')" id="btnMegha" class="p-4 rounded-2xl bg-white/40 border border-white/60 hover:bg-white/60 transition-all group flex flex-col items-center gap-3 shadow-sm hover:shadow-md active:scale-95 duration-200">
+                <button onclick="window.selectProfile('Megha')" id="btnMegha" class="p-4 rounded-2xl bg-white/40 border border-white/60 hover:bg-white/60 transition-all group flex flex-col items-center gap-3 shadow-sm hover:shadow-md active:scale-95 duration-200 cursor-pointer">
                     <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-300 to-pink-500 text-white flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform">
                         <i class="fas fa-heart"></i>
                     </div>
                     <span class="font-bold text-slate-700">Megha</span>
                 </button>
-                <button onclick="selectProfile('Sahariar')" id="btnSahariar" class="p-4 rounded-2xl bg-white/40 border border-white/60 hover:bg-white/60 transition-all group flex flex-col items-center gap-3 shadow-sm hover:shadow-md active:scale-95 duration-200">
+                <button onclick="window.selectProfile('Sahariar')" id="btnSahariar" class="p-4 rounded-2xl bg-white/40 border border-white/60 hover:bg-white/60 transition-all group flex flex-col items-center gap-3 shadow-sm hover:shadow-md active:scale-95 duration-200 cursor-pointer">
                     <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-300 to-blue-500 text-white flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform">
                         <i class="fas fa-heart"></i>
                     </div>
@@ -157,20 +176,20 @@
             <div id="passwordSection" class="hidden space-y-4 animate-fade-in relative z-10 mt-4">
                 <div class="relative">
                     <input type="password" id="loginPassword" class="w-full bg-white/50 border border-white/60 rounded-2xl px-4 py-4 pr-12 outline-none text-slate-800 placeholder-slate-500 focus:bg-white/80 transition-all text-center tracking-widest" placeholder="Enter Password">
-                    <button onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
+                    <button onclick="window.togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-800 focus:outline-none">
                         <i class="fas fa-eye" id="passwordIcon"></i>
                     </button>
                 </div>
                 <p id="loginError" class="text-red-500 text-xs mt-2 hidden text-center font-bold bg-red-100/50 py-1 rounded-lg"><i class="fas fa-exclamation-circle"></i> Incorrect</p>
                 
                 <div class="flex items-center justify-center gap-2">
-                    <input type="checkbox" id="rememberMe" class="rounded text-pink-500 focus:ring-pink-500 border-gray-300 w-4 h-4">
+                    <input type="checkbox" id="rememberMe" class="rounded text-pink-500 focus:ring-pink-500 border-gray-400 w-4 h-4">
                     <label for="rememberMe" class="text-xs font-bold text-slate-600">Keep me logged in</label>
                 </div>
 
                 <div class="flex gap-3 mt-4">
-                    <button onclick="backToProfiles()" class="flex-1 py-3 rounded-xl font-bold text-slate-600 bg-white/40 hover:bg-white/60 transition-colors">Back</button>
-                    <button onclick="attemptLogin()" class="flex-1 py-3 rounded-xl font-bold text-white bg-slate-900/90 hover:bg-slate-800 shadow-lg active:scale-95 transition-all">Enter</button>
+                    <button onclick="window.backToProfiles()" class="flex-1 py-3 rounded-xl font-bold text-slate-600 bg-white/40 hover:bg-white/60 transition-colors">Back</button>
+                    <button onclick="window.attemptLogin()" class="flex-1 py-3 rounded-xl font-bold text-white bg-slate-900/90 hover:bg-slate-800 shadow-lg active:scale-95 transition-all">Enter</button>
                 </div>
             </div>
         </div>
@@ -186,11 +205,10 @@
                 <h1 class="text-2xl font-bold font-script text-slate-800">Us</h1>
             </div>
             <div class="flex items-center gap-3">
-                <!-- Profile Name Display -->
-                <span id="headerProfileName" class="text-xs font-bold text-slate-500 uppercase tracking-wider hidden sm:block mr-2"></span>
-                
-                <button onclick="logout()" class="text-[10px] font-black text-slate-500 hover:text-red-500 transition-colors tracking-widest uppercase">Logout</button>
-                <button onclick="openSettingsModal()" class="w-10 h-10 rounded-full bg-white/50 hover:bg-white flex items-center justify-center text-slate-600 hover:text-slate-900 transition shadow-sm border border-white/50">
+                <span id="headerProfileName" class="text-xs font-bold text-slate-600 uppercase tracking-wider hidden sm:block mr-2 bg-white/30 px-2 py-1 rounded-lg"></span>
+                <button onclick="window.logout()" class="text-[10px] font-black text-slate-500 hover:text-red-500 transition-colors tracking-widest uppercase cursor-pointer">Logout</button>
+                <!-- Settings Button -->
+                <button onclick="window.openSettingsModal()" class="w-10 h-10 rounded-full bg-white/50 hover:bg-white flex items-center justify-center text-slate-600 hover:text-slate-900 transition shadow-sm border border-white/50 cursor-pointer">
                     <i class="fas fa-cog"></i>
                 </button>
             </div>
@@ -206,12 +224,8 @@
                         <div id="partnerAvatarBg" class="w-24 h-24 rounded-full flex items-center justify-center text-4xl shadow-xl border-4 border-white/80 relative z-10 transition-transform duration-500 group-hover:scale-105 backdrop-blur-md">
                             <i class="fas fa-heart text-white drop-shadow-md"></i>
                         </div>
-                        <!-- Status Indicator Dot -->
                         <div id="partnerStatusDot" class="absolute bottom-1 right-1 w-6 h-6 rounded-full border-4 border-white/80 z-20 shadow-md"></div>
-                        <!-- Mood Badge -->
-                        <div id="partnerMoodBadge" class="absolute -top-2 -right-2 w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-xl shadow-lg border border-white z-20 animate-float">
-                            😊
-                        </div>
+                        <div id="partnerMoodBadge" class="absolute -top-2 -right-2 w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-xl shadow-lg border border-white z-20 animate-float">😊</div>
                     </div>
 
                     <!-- Note Bubble -->
@@ -223,90 +237,102 @@
                         <p id="partnerNoteText" class="text-sm text-slate-700 leading-snug font-medium">Thinking of you...</p>
                         
                         <div class="flex justify-between items-center mt-3">
-                            <div id="partnerWorkBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase shadow-sm">
-                                Loading...
-                            </div>
-                            <span id="partnerLastActive" class="text-[9px] text-slate-400 font-bold ml-2"></span>
+                            <div id="partnerWorkBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase shadow-sm">Loading...</div>
+                            <span id="partnerLastActive" class="text-[9px] text-slate-500 font-bold ml-2 bg-white/30 px-2 py-0.5 rounded"></span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- MY CONTROLS -->
-            <div class="glass-panel rounded-[2.5rem] p-6 shadow-lg animate-fade-in relative z-20" style="animation-delay: 0.05s;">
-                <div class="flex justify-between items-center mb-6 px-2">
-                    <h2 class="text-lg font-bold text-slate-800">My Status</h2>
-                    <div id="mySaveStatus" class="text-[10px] font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded-full opacity-0 transition-opacity">SAVED</div>
+            <!-- MY OVERVIEW (Mirror) -->
+            <div class="flex items-start gap-4 justify-center flex-row-reverse animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="relative group flex-shrink-0">
+                    <div id="myAvatarBg" class="w-20 h-20 rounded-full flex items-center justify-center text-3xl shadow-xl border-4 border-white/80 relative z-10 transition-transform duration-500 group-hover:scale-105 backdrop-blur-md">
+                        <i class="fas fa-heart text-white drop-shadow-md"></i>
+                    </div>
+                    <div id="myStatusDot" class="absolute bottom-1 right-1 w-5 h-5 rounded-full border-2 border-white z-20 shadow-md"></div>
+                    <div id="myMoodBadge" class="absolute -top-1 -right-1 w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-lg shadow-lg border border-white z-20 animate-float">😊</div>
+                </div>
+                <div class="note-bubble flex-1">
+                    <div class="flex justify-between items-start mb-1">
+                        <span id="myNameDisplay" class="text-xs font-bold text-slate-800">Me</span>
+                        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">My Status</span>
+                    </div>
+                    <p id="myNoteDisplay" class="text-xs text-slate-700 leading-snug font-medium italic mb-2">My note goes here...</p>
+                    <div class="flex justify-between items-center border-t border-slate-200/50 pt-2">
+                        <div id="myWorkBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase shadow-sm">Loading...</div>
+                        <button onclick="window.toggleMyControls()" class="text-[10px] font-bold text-slate-600 bg-white/60 hover:bg-white px-3 py-1 rounded-full transition-colors flex items-center gap-1 cursor-pointer">
+                            <i class="fas fa-pen"></i> Update
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MY CONTROLS PANEL (Hidden) -->
+            <div id="myControlsPanel" class="hidden glass-panel rounded-[2rem] p-6 shadow-xl animate-slide-down relative z-20 border border-white/70">
+                <div class="flex justify-between items-center mb-5 px-1">
+                    <h2 class="text-sm font-bold text-slate-600 uppercase tracking-widest">Update Profile</h2>
+                    <div id="mySaveStatus" class="text-[9px] font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded-full opacity-0 transition-opacity">SAVED</div>
                 </div>
 
                 <!-- Status Toggle -->
-                <div class="flex items-center justify-between mb-5 bg-white/40 p-4 rounded-2xl border border-white/50 shadow-sm">
-                    <span class="text-sm font-bold text-slate-700 flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-white/60 flex items-center justify-center text-slate-500"><i class="fas fa-briefcase"></i></div>
+                <div class="flex items-center justify-between mb-4 bg-white/40 p-3 rounded-xl border border-white/50">
+                    <span class="text-xs font-bold text-slate-700 flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full bg-white/60 flex items-center justify-center text-slate-500"><i class="fas fa-briefcase text-[10px]"></i></div>
                         Working now?
                     </span>
-                    <div class="relative inline-block w-12 h-7 align-middle select-none">
-                        <input type="checkbox" id="myStatusToggle" class="toggle-checkbox absolute block w-7 h-7 rounded-full bg-white border-4 border-slate-200 appearance-none cursor-pointer transition-all duration-300 shadow-md" onclick="updateMyStatus()"/>
-                        <label for="myStatusToggle" class="toggle-label block overflow-hidden h-7 rounded-full bg-slate-300/50 cursor-pointer transition-colors duration-300"></label>
+                    <div class="relative inline-block w-10 h-6 align-middle select-none">
+                        <input type="checkbox" id="myStatusToggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-slate-200 appearance-none cursor-pointer transition-all duration-300 shadow-sm" onclick="window.updateMyStatus()"/>
+                        <label for="myStatusToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300/50 cursor-pointer transition-colors duration-300"></label>
                     </div>
                 </div>
 
                 <!-- Mood Selector -->
-                <div class="mb-5 relative">
-                    <button onclick="toggleMyMoodDropdown()" id="myMoodTrigger" class="w-full bg-white/40 border border-white/50 rounded-2xl p-4 flex items-center justify-between hover:bg-white/60 transition-all shadow-sm active:scale-[0.98]">
+                <div class="mb-4 relative">
+                    <button onclick="window.toggleMyMoodDropdown()" id="myMoodTrigger" class="w-full bg-white/40 border border-white/50 rounded-xl p-3 flex items-center justify-between hover:bg-white/60 transition-all shadow-sm active:scale-[0.98] cursor-pointer">
                         <span class="flex items-center gap-3">
-                            <span id="myMoodIcon" class="text-2xl filter drop-shadow-sm">😊</span>
-                            <div class="text-left">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase block">I am feeling</span>
-                                <span id="myMoodLabel" class="text-sm font-bold text-slate-800">Happy</span>
-                            </div>
+                            <span id="myControlMoodIcon" class="text-xl filter drop-shadow-sm">😊</span>
+                            <span id="myControlMoodLabel" class="text-xs font-bold text-slate-800">Happy</span>
                         </span>
-                        <div class="w-8 h-8 rounded-full bg-white/50 flex items-center justify-center text-slate-400">
-                            <i class="fas fa-chevron-down text-xs"></i>
-                        </div>
+                        <i class="fas fa-chevron-down text-slate-400 text-[10px]"></i>
                     </button>
-                    <!-- Dropdown -->
-                    <div id="myMoodDropdown" class="hidden absolute top-full left-0 w-full mt-2 glass-panel rounded-2xl shadow-2xl overflow-hidden z-50 max-h-60 overflow-y-auto">
+                    <div id="myMoodDropdown" class="hidden absolute top-full left-0 w-full mt-2 glass-panel rounded-xl shadow-2xl overflow-hidden z-50 max-h-48 overflow-y-auto">
                         <!-- JS Populates -->
                     </div>
                 </div>
 
                 <!-- Note Input -->
                 <div class="relative">
-                    <div class="flex justify-between items-end mb-2 px-1">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">My Note</span>
-                        <!-- Removed time from here as requested -->
-                    </div>
-                    <textarea id="myNoteInput" readonly class="w-full glass-input rounded-2xl p-5 text-sm text-slate-800 placeholder-slate-500 resize-none h-28 outline-none transition-shadow font-medium leading-relaxed opacity-70" placeholder="Share your thoughts..."></textarea>
-                    <button onclick="toggleNoteEdit()" class="absolute bottom-4 right-4 text-slate-500 hover:text-slate-800 transition-colors p-2 bg-white/50 rounded-full shadow-sm hover:shadow-md">
-                        <i id="noteEditIcon" class="fas fa-pen text-xs"></i>
+                    <textarea id="myNoteInput" readonly class="w-full glass-input rounded-xl p-4 text-xs text-slate-800 placeholder-slate-500 resize-none h-20 outline-none transition-shadow font-medium leading-relaxed opacity-70" placeholder="Share your thoughts..."></textarea>
+                    <button onclick="window.toggleNoteEdit()" class="absolute bottom-3 right-3 text-slate-500 hover:text-slate-800 transition-colors p-1.5 bg-white/50 rounded-full shadow-sm hover:shadow-md cursor-pointer">
+                        <i id="noteEditIcon" class="fas fa-pen text-[10px]"></i>
                     </button>
                 </div>
             </div>
 
             <!-- SHARED CARD -->
-            <div class="glass-panel rounded-[2.5rem] p-8 shadow-lg text-center animate-fade-in relative z-10" style="animation-delay: 0.1s;">
-                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6">Next Meeting</h3>
+            <div class="glass-panel rounded-[2rem] p-6 shadow-lg text-center animate-fade-in relative z-10" style="animation-delay: 0.1s;">
+                <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">Next Meeting</h3>
                 
-                <div id="countdownContainer" class="flex flex-wrap justify-center gap-3 mb-4">
+                <div id="countdownContainer" class="flex flex-wrap justify-center gap-2 mb-4">
                     <!-- Timer -->
                 </div>
                 
-                <div class="text-sm text-slate-600 font-bold mb-8" id="nextMeetDateDisplay">Loading...</div>
+                <div class="text-xs text-slate-600 font-bold mb-6 bg-white/30 inline-block px-3 py-1 rounded-full" id="nextMeetDateDisplay">Loading...</div>
 
-                <div class="border-t border-slate-200/50 pt-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Bucket List</span>
-                        <button onclick="openBucketModal()" class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-colors shadow-lg active:scale-90"><i class="fas fa-plus text-xs"></i></button>
+                <div class="border-t border-slate-200/50 pt-4">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Bucket List</span>
+                        <button onclick="window.openBucketModal()" class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-colors shadow-lg active:scale-90 cursor-pointer"><i class="fas fa-plus text-[9px]"></i></button>
                     </div>
-                    <ul id="bucketList" class="text-left space-y-2.5">
+                    <ul id="bucketList" class="text-left space-y-2">
                         <!-- Items -->
                     </ul>
                 </div>
             </div>
 
             <div class="text-center">
-                <p id="togetherTimer" class="text-sm font-mono text-white/90 drop-shadow-md font-bold">Loading history...</p>
+                <p id="togetherTimer" class="text-xs font-mono text-slate-600/80 font-bold drop-shadow-sm mb-4">Loading history...</p>
             </div>
 
         </main>
@@ -314,7 +340,7 @@
 
     <!-- SETTINGS MODAL -->
     <div id="settingsModal" class="fixed inset-0 z-[200] hidden">
-        <div class="absolute inset-0 bg-slate-900/20 backdrop-blur-md transition-opacity duration-300" onclick="closeSettingsModal()"></div>
+        <div class="absolute inset-0 bg-slate-900/20 backdrop-blur-md transition-opacity duration-300" onclick="window.closeSettingsModal()"></div>
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-xs glass-panel rounded-3xl p-6 shadow-2xl scale-95 opacity-0 transition-all duration-300" id="settingsPanel">
             <h3 class="text-xl font-bold text-slate-800 mb-6 font-script">Settings</h3>
             <div class="space-y-5">
@@ -322,19 +348,19 @@
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Next Meeting</label>
                     <input type="datetime-local" id="inputNextMeet" class="w-full bg-white/50 border border-white/60 rounded-xl px-4 py-3 text-sm outline-none focus:bg-white/80 transition-colors">
                 </div>
-                <button onclick="saveSettings()" class="w-full bg-slate-800 text-white font-bold py-3.5 rounded-xl hover:bg-slate-700 shadow-lg active:scale-95 transition-all">Save Changes</button>
+                <button onclick="window.saveSettings()" class="w-full bg-slate-800 text-white font-bold py-3.5 rounded-xl hover:bg-slate-700 shadow-lg active:scale-95 transition-all">Save Changes</button>
             </div>
         </div>
     </div>
 
     <!-- BUCKET MODAL -->
     <div id="bucketModal" class="fixed inset-0 z-[200] hidden">
-        <div class="absolute inset-0 bg-slate-900/20 backdrop-blur-md transition-opacity duration-300" onclick="closeBucketModal()"></div>
+        <div class="absolute inset-0 bg-slate-900/20 backdrop-blur-md transition-opacity duration-300" onclick="window.closeBucketModal()"></div>
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-xs glass-panel rounded-3xl p-6 shadow-2xl scale-95 opacity-0 transition-all duration-300" id="bucketPanel">
             <h3 class="text-xl font-bold text-slate-800 mb-6 font-script">Add Goal</h3>
             <div class="space-y-5">
                 <input type="text" id="inputBucketItem" placeholder="e.g. Visit Paris..." class="w-full bg-white/50 border border-white/60 rounded-xl px-4 py-3 text-sm outline-none focus:bg-white/80 transition-colors">
-                <button onclick="confirmAddBucket()" class="w-full bg-slate-800 text-white font-bold py-3.5 rounded-xl hover:bg-slate-700 shadow-lg active:scale-95 transition-all">Add to List</button>
+                <button onclick="window.confirmAddBucket()" class="w-full bg-slate-800 text-white font-bold py-3.5 rounded-xl hover:bg-slate-700 shadow-lg active:scale-95 transition-all">Add to List</button>
             </div>
         </div>
     </div>
@@ -355,13 +381,12 @@
           measurementId: "G-JSLRXLGRCY"
         };
 
-        // --- VARS ---
         let db, auth;
         const DOC_ID = "us_data";
         let currentUser = null; 
         let selectedProfileTemp = null;
+        let isFirebaseInitialized = false;
 
-        // Configs
         const USERS = {
             'Megha': { 
                 id: 1, 
@@ -401,12 +426,11 @@
             offset: 0, anniversary: "2025-11-10", nextMeet: "",
             mood1: 'happy', mood2: 'happy',
             note1: "", note2: "",
-            lastActive1: 0, lastActive2: 0, // General Timestamp for ANY activity
+            lastActive1: 0, lastActive2: 0,
             status1: 'resting', status2: 'resting',
             bucketList: []
         };
 
-        // --- INIT ---
         function init() {
             const dd = document.getElementById('myMoodDropdown');
             dd.innerHTML = moods.map(m => `
@@ -416,45 +440,50 @@
                 </button>
             `).join('');
 
+            loadLocal();
+            
             const savedUser = localStorage.getItem('ldr_user');
             if (savedUser && USERS[savedUser]) {
                 currentUser = savedUser;
-                initFirebase(); 
+                document.getElementById('loadingScreen').classList.remove('hidden');
+                initFirebase();
             } else {
-                loadLocal(); 
                 showLoginScreen();
-                setTimeout(hideLoader, 500); 
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').classList.add('hidden');
+                }, 500); 
             }
         }
 
         function initFirebase() {
+            if (isFirebaseInitialized) return;
             if (!firebaseConfig.apiKey) {
-                console.warn("No Config");
-                loadLocal();
-                enterApp();
-                return;
+                enterApp(); return;
             }
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-            signInAnonymously(auth).catch(console.error);
-            onAuthStateChanged(auth, user => {
-                const el = document.getElementById('syncStatus');
-                if(user) {
-                    el.className = "w-2.5 h-2.5 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]";
-                    setupListener();
-                } else {
-                    el.className = "w-2.5 h-2.5 rounded-full bg-red-400";
-                }
-            });
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                isFirebaseInitialized = true;
+
+                signInAnonymously(auth).catch(console.error);
+                onAuthStateChanged(auth, user => {
+                    const el = document.getElementById('syncStatus');
+                    if(user) {
+                        el.className = "w-2.5 h-2.5 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]";
+                        setupListener();
+                    } else {
+                        el.className = "w-2.5 h-2.5 rounded-full bg-red-400";
+                    }
+                });
+                setTimeout(enterApp, 3000); 
+            } catch (e) { console.error(e); enterApp(); }
         }
 
         function setupListener() {
             onSnapshot(doc(db, "couples", DOC_ID), (snap) => {
                 if (snap.exists()) {
-                    const remote = snap.data();
-                    // Merge safely
-                    appData = { ...appData, ...remote };
+                    appData = { ...appData, ...snap.data() };
                     renderDashboard();
                     if (currentUser && document.getElementById('mainContent').classList.contains('hidden')) {
                         enterApp();
@@ -467,9 +496,10 @@
         }
 
         function showLoginScreen() {
-            document.getElementById('loadingScreen').classList.add('hidden');
             document.getElementById('loginScreen').classList.remove('hidden');
         }
+
+        // --- GLOBAL FUNCTIONS (WINDOW) ---
 
         window.selectProfile = (name) => {
             selectedProfileTemp = name;
@@ -510,7 +540,7 @@
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('loadingScreen').classList.remove('hidden');
                 document.getElementById('loadingScreen').classList.remove('opacity-0');
-                setTimeout(initFirebase, 300);
+                initFirebase();
             } else {
                 document.getElementById('loginError').classList.remove('hidden');
             }
@@ -521,13 +551,8 @@
             location.reload();
         };
 
-        function hideLoader() {
-             const loader = document.getElementById('loadingScreen');
-             loader.classList.add('opacity-0');
-             setTimeout(() => loader.classList.add('hidden'), 300);
-        }
-
         function enterApp() {
+            if (!document.getElementById('mainContent').classList.contains('hidden')) return;
             const loader = document.getElementById('loadingScreen');
             loader.classList.add('opacity-0');
             document.getElementById('mainContent').classList.remove('hidden');
@@ -542,44 +567,15 @@
             const partnerName = USERS[currentUser].partner;
             const partnerId = USERS[partnerName].id;
 
-            // HEADER PROFILE NAME
-            const headerProfile = document.getElementById('headerProfileName');
-            if(headerProfile) headerProfile.innerText = currentUser;
+            // Header
+            document.getElementById('headerProfileName').innerText = currentUser;
 
-            // 1. PARTNER SECTION
-            const partnerAvatarBg = document.getElementById('partnerAvatarBg');
-            const partnerStatusDot = document.getElementById('partnerStatusDot');
-            const partnerMoodBadge = document.getElementById('partnerMoodBadge');
-            
-            if (partnerName === 'Megha') {
-                partnerAvatarBg.className = `w-24 h-24 rounded-full flex items-center justify-center text-4xl shadow-xl border-4 border-white/80 relative z-10 transition-transform duration-500 group-hover:scale-105 backdrop-blur-md bg-gradient-to-br from-pink-400 to-rose-500 text-white`;
-            } else {
-                partnerAvatarBg.className = `w-24 h-24 rounded-full flex items-center justify-center text-4xl shadow-xl border-4 border-white/80 relative z-10 transition-transform duration-500 group-hover:scale-105 backdrop-blur-md bg-gradient-to-br from-blue-400 to-indigo-500 text-white`;
-            }
+            // Partner Section
+            renderBubble(partnerId, 'partner', partnerName);
+            // My Section
+            renderBubble(myId, 'my', currentUser);
 
-            const pMood = appData[`mood${partnerId}`];
-            const pStatus = appData[`status${partnerId}`];
-            const pNote = appData[`note${partnerId}`];
-            const pLastActive = appData[`lastActive${partnerId}`];
-
-            const pMoodObj = moods.find(m => m.id === pMood) || moods[0];
-            partnerMoodBadge.innerText = pMoodObj.icon;
-            document.getElementById('partnerNameDisplay').innerText = partnerName;
-            document.getElementById('partnerNoteText').innerText = pNote || "No thoughts yet...";
-            document.getElementById('partnerLastActive').innerText = timeAgo(pLastActive);
-            
-            const badgeEl = document.getElementById('partnerWorkBadge');
-            if(pStatus === 'working') {
-                partnerStatusDot.className = "absolute bottom-1 right-1 w-6 h-6 rounded-full border-4 border-white/80 z-20 shadow-md bg-orange-500";
-                badgeEl.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase shadow-sm bg-orange-100 text-orange-600";
-                badgeEl.innerHTML = `<i class="fas fa-briefcase"></i> Working`;
-            } else {
-                partnerStatusDot.className = "absolute bottom-1 right-1 w-6 h-6 rounded-full border-4 border-white/80 z-20 shadow-md bg-green-500";
-                badgeEl.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase shadow-sm bg-green-100 text-green-600";
-                badgeEl.innerHTML = `<i class="fas fa-coffee"></i> Resting`;
-            }
-
-            // 2. MY CONTROLS
+            // Controls
             const myStatus = appData[`status${myId}`];
             const myMood = appData[`mood${myId}`];
             const myNote = appData[`note${myId}`];
@@ -587,11 +583,10 @@
             document.getElementById('myStatusToggle').checked = (myStatus === 'working');
             
             const myMoodObj = moods.find(m => m.id === myMood) || moods[0];
-            document.getElementById('myMoodIcon').innerText = myMoodObj.icon;
-            document.getElementById('myMoodLabel').innerText = myMoodObj.label;
+            document.getElementById('myControlMoodIcon').innerText = myMoodObj.icon;
+            document.getElementById('myControlMoodLabel').innerText = myMoodObj.label;
 
             const noteInput = document.getElementById('myNoteInput');
-            // Only update if not editing
             if (!isEditingNote && noteInput.value !== myNote) {
                 noteInput.value = myNote || "";
             }
@@ -600,7 +595,43 @@
             updateTimers();
         }
 
-        // --- Helper ---
+        function renderBubble(userId, prefix, name) {
+            const mood = appData[`mood${userId}`];
+            const status = appData[`status${userId}`];
+            const note = appData[`note${userId}`];
+            const lastActive = appData[`lastActive${userId}`];
+
+            const avatarBg = document.getElementById(`${prefix}AvatarBg`);
+            const statusDot = document.getElementById(`${prefix}StatusDot`);
+            const moodBadge = document.getElementById(`${prefix}MoodBadge`);
+            const workBadge = document.getElementById(`${prefix}WorkBadge`);
+
+            const isMegha = (name === 'Megha');
+            const grad = isMegha ? 'from-pink-400 to-rose-500' : 'from-blue-400 to-indigo-500';
+            avatarBg.className = `w-24 h-24 rounded-full flex items-center justify-center text-3xl shadow-xl border-4 border-white/80 relative z-10 transition-transform duration-500 group-hover:scale-105 backdrop-blur-md bg-gradient-to-br ${grad} text-white`;
+
+            const moodObj = moods.find(m => m.id === mood) || moods[0];
+            moodBadge.innerText = moodObj.icon;
+            document.getElementById(`${prefix}NameDisplay`).innerText = name === currentUser ? "Me" : name;
+            
+            if (prefix === 'my') {
+                 document.getElementById('myNoteDisplay').innerText = note || "Tap 'Update' to add a note...";
+            } else {
+                 document.getElementById('partnerNoteText').innerText = note || "No thoughts yet...";
+                 document.getElementById('partnerLastActive').innerText = timeAgo(lastActive);
+            }
+
+            if(status === 'working') {
+                statusDot.className = "absolute bottom-1 right-1 w-6 h-6 rounded-full border-4 border-white/80 z-20 shadow-md bg-orange-500";
+                workBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase shadow-sm bg-orange-100 text-orange-600";
+                workBadge.innerHTML = `<i class="fas fa-briefcase"></i> Working`;
+            } else {
+                statusDot.className = "absolute bottom-1 right-1 w-6 h-6 rounded-full border-4 border-white/80 z-20 shadow-md bg-green-500";
+                workBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase shadow-sm bg-green-100 text-green-600";
+                workBadge.innerHTML = `<i class="fas fa-coffee"></i> Resting`;
+            }
+        }
+
         function timeAgo(timestamp) {
             if(!timestamp) return '';
             const diff = Math.floor((Date.now() - timestamp) / 1000);
@@ -616,7 +647,7 @@
         function showSaveFeedback() {
             const status = document.getElementById('mySaveStatus');
             status.innerText = "SAVED";
-            status.className = "text-[10px] font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded-full transition-opacity";
+            status.className = "text-[9px] font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded-full transition-opacity";
             status.style.opacity = '1';
             setTimeout(() => status.style.opacity = '0', 1500);
         }
@@ -626,6 +657,18 @@
             appData[`lastActive${myId}`] = Date.now();
         }
 
+        // Window exposed functions
+        window.toggleMyControls = () => {
+            const panel = document.getElementById('myControlsPanel');
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                panel.classList.add('animate-slide-down');
+            } else {
+                panel.classList.add('hidden');
+                panel.classList.remove('animate-slide-down');
+            }
+        };
+
         window.updateMyStatus = () => {
             const myId = USERS[currentUser].id;
             const isWorking = document.getElementById('myStatusToggle').checked;
@@ -633,6 +676,7 @@
             updateActivity();
             saveData();
             showSaveFeedback();
+            renderDashboard(); 
         };
 
         window.toggleMyMoodDropdown = () => {
@@ -649,7 +693,6 @@
             renderDashboard(); 
         };
 
-        // Note Editing Logic
         let isEditingNote = false;
         window.toggleNoteEdit = () => {
             const input = document.getElementById('myNoteInput');
@@ -657,7 +700,6 @@
             const myId = USERS[currentUser].id;
 
             if (!isEditingNote) {
-                // Start Editing
                 isEditingNote = true;
                 input.removeAttribute('readonly');
                 input.classList.remove('opacity-70');
@@ -665,18 +707,17 @@
                 icon.classList.remove('fa-pen');
                 icon.classList.add('fa-check');
             } else {
-                // Finish Editing (Done)
                 isEditingNote = false;
                 input.setAttribute('readonly', true);
                 input.classList.add('opacity-70');
                 icon.classList.remove('fa-check');
                 icon.classList.add('fa-pen');
                 
-                // Save
                 appData[`note${myId}`] = input.value;
                 updateActivity();
                 saveData();
                 showSaveFeedback();
+                renderDashboard(); 
             }
         };
 
@@ -689,7 +730,6 @@
             list.innerHTML = appData.bucketList.map(item => {
                 let dotColor = 'border-slate-300';
                 let checkColor = 'bg-slate-400';
-                // 1=Megha(Pink), 2=Sahariar(Blue)
                 if(item.addedBy === 1) { 
                     dotColor = 'border-pink-400';
                     checkColor = 'bg-pink-500';
@@ -717,7 +757,6 @@
             const timeOptions = {hour:'2-digit', minute:'2-digit', second: '2-digit'};
             document.getElementById('partnerTimeDisplay').innerText = now.toLocaleTimeString([], timeOptions);
 
-            // Together Timer
             let togetherText = { d:0, h:0, m:0, s:0 };
             if (appData.anniversary) {
                 const start = new Date(appData.anniversary);
@@ -772,7 +811,7 @@
             }
         }
 
-        // --- MODALS ---
+        // --- EXPOSED MODALS ---
         window.openSettingsModal = () => {
             document.getElementById('inputNextMeet').value = appData.nextMeet;
             document.getElementById('settingsModal').classList.remove('hidden');
@@ -788,7 +827,7 @@
         window.saveSettings = () => {
             appData.nextMeet = document.getElementById('inputNextMeet').value;
             saveData();
-            closeSettingsModal();
+            window.closeSettingsModal();
         }
 
         window.openBucketModal = () => {
@@ -815,7 +854,7 @@
                 });
                 saveData();
                 renderBucketList();
-                closeBucketModal();
+                window.closeBucketModal();
             }
         }
         window.toggleBucketItem = (id) => {
@@ -827,7 +866,6 @@
             saveData(); renderBucketList();
         }
 
-        // Close dropdowns
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#myMoodTrigger')) {
                 document.getElementById('myMoodDropdown').classList.add('hidden');
@@ -846,7 +884,6 @@
             }
         }
 
-        // Start
         init();
         setInterval(updateTimers, 1000);
 
